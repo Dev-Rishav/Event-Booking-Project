@@ -1,4 +1,5 @@
 import Event from '../model/eventModel.js';
+import pool from '../database/db.js';
 
 export const getEventsByOrganizer = async(req ,res) => {
     try {
@@ -163,13 +164,13 @@ export const getEventsByCityAndOrganizer = async(req ,res) => {
 }
 
 export const getEventsByCity = async(req ,res) => {
-    const city = req.params.id;
+    const { city } = req.query;
     try { 
         const result = await Event.getEventsByCity(city);
         if(!result){
             return res.status(401).json({ error: "No events available" });
         }
-        console.log(result);
+        // console.log(result);
         
         return res.status(201).json({ msg: "All the events of given city are : " , result});
     } catch (error) {
@@ -212,9 +213,26 @@ export const getTopEventByLikes = async(req,res) => {
 
 
 export const getEventsByCategory = async(req ,res) => {
-    const category = req.params.id;
+    const { city, category } = req.query;
     try { 
-        const result = await Event.getEventsByCategory(category);
+        const result = await Event.getEventsByCategory(city , category);
+        if(!result){
+            return res.status(401).json({ error: "No events available" });
+        }
+        // console.log(result);
+        
+        return res.status(201).json({ msg: "All the events of given category are : " , result});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+
+export const getEventsByDateandCity = async(req ,res) => {
+    const { city, event_date } = req.query;
+    try { 
+        const result = await Event.getEventsByDateandCity(city , event_date);
         if(!result){
             return res.status(401).json({ error: "No events available" });
         }
@@ -248,3 +266,155 @@ export const getVenueById = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+export const getAllBookingsOfAnOrganizer = async(req,res) => {
+    const organizer_id = req.params.id;
+    try {
+        const result = await Event.getAllBookingsOfAnOrganizer(organizer_id);
+        if(!result){
+            return res.status(401).json({ error: "No bookings available" });
+        }
+        return res.json({msg :"All bookings are : " , result});
+    } catch (error) {
+        console.error("Error fetching bookings:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export const getAllBookingsOfAUser = async(req,res) => {
+    const user_id = req.params.id;
+    try {
+        const result = await Event.getAllBookingsOfAUser(user_id);
+        if(!result){
+            return res.status(401).json({ error: "No bookings available" });
+        }
+        return res.json({msg :"All bookings are : " , result});
+    } catch (error) {
+        console.error("Error fetching bookings:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export const getEventwiseEarningofOrganizer = async(req,res) => {
+    const organizer_id = req.params.id;
+    try {
+        const result = await Event.getEventwiseEarningofOrganizer(organizer_id);
+        if(!result){
+            return res.status(401).json({ error: "No earnings available" });
+        }
+        return res.json({msg :"All earnings are : " , result});
+    } catch (error) {
+        console.error("Error fetching earnings:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export const likeEvent = async(req,res) => {
+    const user_id = req.body.user_id;
+    const event_id = req.body.event_id;
+    try {
+        const result = await Event.likeEvent(user_id , event_id);
+        await pool.query(
+            `UPDATE events SET likes_count = likes_count + 1 WHERE event_id = $1`,
+            [event_id]
+        );
+
+        if(!result){
+            return res.status(401).json({ error: "No events available" });
+        }
+        return res.json({msg :"All liked events are : " , result});
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+
+export const unlikeEvent = async(req,res) => {
+    const user_id = req.body.user_id;
+    const event_id = req.body.event_id;
+    try {
+        const result = await Event.unlikeEvent(user_id , event_id);
+        await pool.query(`UPDATE events SET likes_count = GREATEST(likes_count - 1, 0) WHERE event_id = $1`, [event_id]);
+
+        if(!result){
+            return res.status(401).json({ error: "No events available" });
+        }
+        return res.json({msg :"All liked events are : " , result});
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export const getLikedEventsByUser = async(req,res) => {
+    const user_id = req.params.id;
+    try {
+        const result = await Event.getLikedEventsByUser(user_id);
+        if(!result){
+            return res.status(401).json({ error: "No events available" });
+        }
+        return res.json({msg :"All liked events are : " , result});
+    } catch (error) {
+        console.error("Error fetching events:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+// export const searchEvents = async (req, res) => {
+//     try {
+//       const { city, category, date } = req.query;
+  
+//       // Base query with correct joins using shows
+//       let query = `
+//         SELECT 
+//           DISTINCT e.event_id, 
+//           e.title, 
+//           e.description, 
+//           e.category, 
+//           e.event_date, 
+//           e.organizer_id, 
+//           e.image, 
+//           e.likes_count, 
+//           e.status, 
+//           e.created_at, 
+//           v.name AS venue_name, 
+//           v.city
+//         FROM events e
+//         JOIN shows s ON e.event_id = s.event_id
+//         JOIN venues v ON s.venue_id = v.venue_id
+//         WHERE 1=1
+//       `;
+  
+//       const params = [];
+  
+//       // Dynamically add filters
+//       if (city) {
+//         query += ` AND v.city = $${params.length + 1}`;
+//         params.push(city);
+//       }
+  
+//       if (category) {
+//         query += ` AND e.category = $${params.length + 1}`;
+//         params.push(category);
+//       }
+  
+//       if (date) {
+//         query += ` AND e.event_date = $${params.length + 1}`;
+//         params.push(date);
+//       }
+  
+//       query += ` ORDER BY e.event_date`;
+  
+//       const result = await pool.query(query, params);
+  
+//       if (result.rows.length === 0) {
+//         return res.status(404).json({ message: 'No events found matching your criteria' });
+//       }
+  
+//       return res.status(200).json({ result: result.rows });
+//     } catch (error) {
+//       return res.status(500).json({ message: 'Internal server error', error: error.message });
+//     }
+//   };
+  

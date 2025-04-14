@@ -29,9 +29,12 @@ const Login = () => {
       Cookies.set("token", token , { expires: 1 });
       Cookies.set("role", role , { expires: 1 });
       Cookies.set("id" , userId ,  { expires: 1 });
-      // Redirect to a protected route or dashboard
-      // navigation('/user/dashboard');
-      navigation('/organizer/home');
+      // Navigate based on role
+      if (role === "user") {
+        navigation("/user/dashboard");
+      } else if (role === "organizer") {
+        navigation("/organizer/home");
+      } 
     } catch (error) {
       setError("Failed to Login");
     }

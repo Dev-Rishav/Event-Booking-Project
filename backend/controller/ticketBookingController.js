@@ -1,6 +1,6 @@
 import Ticket from '../model/ticketBookingModel.js';
-import redis from '../database/Redis.js';
-import pool from '../database/db.js';
+// import redis from '../database/Redis.js';
+// import pool from '../database/db.js';
 
 
 // export const holdSeats = async(req,res) => {
@@ -18,30 +18,30 @@ import pool from '../database/db.js';
 //     }
 // }
 
-// export const bookSeats = async(req,res) => {
-//   const { show_id, seats, userId } = req.body;
-// //   const client = await pool.connect();
-//   try {
-//     // await client.query('BEGIN');
-//     for (const seat of seats) {
-//       const redisKey = `hold:${show_id}:${seat}`;
-//       const heldBy = await redis.get(redisKey);
-//       if (heldBy !== userId) throw new Error(`Seat ${seat} not held by you or expired.`);
-//       const result = await Ticket.bookSeat(show_id, seat);
-//       await redis.del(redisKey);
-//     }
-//     // await client.query('COMMIT');
+export const bookSeats = async(req,res) => {
+  const { show_id, seats, userId } = req.body;
+//   const client = await pool.connect();
+  try {
+    // await client.query('BEGIN');
+    for (const seat of seats) {
+    //   const redisKey = `hold:${show_id}:${seat}`;
+    //   const heldBy = await redis.get(redisKey);
+    //   if (heldBy !== userId) throw new Error(`Seat ${seat} not held by you or expired.`);
+      const result = await Ticket.bookSeat(show_id, seat);
+      // await redis.del(redisKey);
+    }
+    // await client.query('COMMIT');
 
-//     // const ticketPath = path.join(__dirname, `../tickets/ticket-${Date.now()}.pdf`);
-//     // await generateTicketPDF(userId, showId, seats, ticketPath);
+    // const ticketPath = path.join(__dirname, `../tickets/ticket-${Date.now()}.pdf`);
+    // await generateTicketPDF(userId, showId, seats, ticketPath);
 
-//     // res.status(200).json({ message: 'Booking confirmed!', ticket: ticketPath });
-//     res.status(200).json({ message: 'Booking confirmed!'});
-//   } catch (err) {
-//     // await client.query('ROLLBACK');
-//     res.status(400).json({ message: err.message });
-//   }
-// }
+    // res.status(200).json({ message: 'Booking confirmed!', ticket: ticketPath });
+    return res.status(200).json({ message: 'Booking confirmed!'});
+  } catch (err) {
+    // await client.query('ROLLBACK');
+    res.status(400).json({ message: err.message });
+  }
+}
 
 
 export const fetchSeats = async(req,res) => {

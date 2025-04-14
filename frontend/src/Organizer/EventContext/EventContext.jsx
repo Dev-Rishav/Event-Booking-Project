@@ -11,6 +11,7 @@ export const useEvent = () => {
 const EventProvider = ({children}) => {
 
     const [events , setEvents] = useState([]);
+    const [bookings , SetBookings] = useState([]);
     const [shows , setShows] = useState([]);
     const [error , setError] = useState(null);
     const [loading , setLoading] = useState(false);
@@ -106,6 +107,16 @@ const EventProvider = ({children}) => {
         }
     }
 
+    const getAllBookingOfOrganizer = async(organizer_id) => {
+        try {
+            const response = await axios.get(`http://localhost:8001/api/organizerbookings/${organizer_id}`);
+            SetBookings(response.data.result);
+            return response;
+        } catch (error) {
+            setError(error.message);
+        }
+    }
+
     
 
 
@@ -114,6 +125,7 @@ const EventProvider = ({children}) => {
           value={{
             events,
             shows,
+            bookings,
             loading,
             error,
             selectEvent,
@@ -126,6 +138,7 @@ const EventProvider = ({children}) => {
             createShow,
             getEventsByCategory,
             getEventsByCity,
+            getAllBookingOfOrganizer
           }}
         >
           {children}

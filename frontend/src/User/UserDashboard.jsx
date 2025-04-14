@@ -1,6 +1,5 @@
 import React from 'react';
-import EventCards from './EventsByCategory';
-import EventCityCards from './EventsByCity';
+import EventCards from './UserEvents';
 
 const UserDashboard = () => {
     return (
