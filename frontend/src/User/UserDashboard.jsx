@@ -3,10 +3,8 @@ import EventCards from './UserEvents';
 
 const UserDashboard = () => {
     return (
-        <div>
-            welcome to UserDashboard page
+        <div className='mt-12'>
             <EventCards />
-            {/* <EventCityCards /> */}
         </div>
     )
 }

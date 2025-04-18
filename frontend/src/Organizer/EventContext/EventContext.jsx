@@ -28,7 +28,7 @@ const EventProvider = ({children}) => {
         setLoading(true);
         try {
             const response = await axios.get(`${URL}/${id}`);
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setEvents(response.data.result);
             setError(null);
         } catch (error) {
@@ -44,7 +44,7 @@ const EventProvider = ({children}) => {
         setLoading(true);
         try {
             const response = await axios.get(`${URL}/show/${event_id}`);
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setShows(response.data.result);
             setError(null);
         } catch (error) {
@@ -59,7 +59,7 @@ const EventProvider = ({children}) => {
         try {
             const response = await axios.get(`${URL}/${id}`);
             setEvents(response.data.result);
-            console.log(response.data.result);
+            // console.log(response.data.result);
             setError(null);
         } catch (error) {
             setError(error.message);

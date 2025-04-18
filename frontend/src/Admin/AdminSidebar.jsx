@@ -1,13 +1,10 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
-import { useUser } from "../../User/UserContext/UserContext";
 import { FaHome, FaMoneyBill, FaFilm, FaClipboardList, FaStar, FaBell, FaUser, FaBars } from "react-icons/fa";
-import UserNotifications from "../../User/UserNotifications";
-const Sidebar = () => {
+
+const AdminSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const [showDropdown, setShowDropdown] = useState(false);
-  const { hasNewNotification, clearNotificationBadge } = useUser();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -20,44 +17,24 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { name: "Home", path: "/organizer/home", icon: <FaHome /> },
-    { name: "Revenue", path: "/organizer/revenue", icon: <FaMoneyBill /> },
-    { name: "Events", path: "/organizer/events", icon: <FaFilm /> },
-    { name: "Bookings", path: "/organizer/bookings", icon: <FaClipboardList /> },
-    { name: "Profile", path: "/organizer/profile", icon: <FaUser /> },
+    { name: "Home", path: "/admin/dashboard", icon: <FaHome /> },
+    { name: "Revenue", path: "/admin/revenue", icon: <FaMoneyBill /> },
+    { name: "Users", path: "/admin/users", icon: <FaFilm /> },
+    { name: "Oraganizers", path: "/admin/organizers", icon: <FaClipboardList /> },
+    { name: "Profile", path: "/admin/profile", icon: <FaUser /> },
   ];
 
   return (
     <>
       {/* Navbar - Fixed at the top */}
       <div className="bg-gray-900 text-white fixed top-0 left-0 w-full h-16 flex justify-between items-center px-6 shadow-md z-50">
-        <h1 className="text-xl font-bold ml-16">Atul The Great</h1>
-
-        <div className="flex items-center space-x-4">
-          <div className="relative">
-            <button
-              onClick={() => {
-                setShowDropdown(!showDropdown);
-                clearNotificationBadge();
-              }}
-              className="relative focus:outline-none"
-            >
-              <FaBell className="text-xl mr-8 mt-2" />
-              {hasNewNotification && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-ping" />
-              )}
-            </button>
-          </div> 
-
-
+        <h1 className="text-xl font-bold ml-16">Admin Panel</h1>
         <button
           onClick={handleLogout}
           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
         >
           Logout
         </button>
-      </div>
-      {showDropdown && <UserNotifications />}
       </div>
 
       {/* Sidebar - Fixed to the left */}
@@ -89,4 +66,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default AdminSidebar;

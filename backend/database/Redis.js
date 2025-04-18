@@ -1,9 +1,14 @@
-// const Redis = require('ioredis');
-// const redis = new Redis();
-// module.exports = redis;
 
-import Redis from 'ioredis';
+import { createClient } from 'redis';
 
-const redis = new Redis();
+const redisClient = createClient();
 
-export default redis;
+redisClient.on('error', (err) => {
+    console.error('Redis error:', err);
+});
+
+redisClient.connect().then(() => {
+    console.log("Connected to Redis");
+});
+
+export default redisClient;

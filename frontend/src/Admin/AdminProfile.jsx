@@ -11,7 +11,7 @@ import {
   FaTimes
 } from 'react-icons/fa';
 
-const UserProfile = () => {
+const AdminProfile = () => {
   const [user, setUser] = useState({});
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(false);
@@ -143,4 +143,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default AdminProfile;

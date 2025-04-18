@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { FaTicketAlt } from 'react-icons/fa';
 
-const UserBookings = ({  }) => {
+const UserBookings = () => {
   const id = Cookies.get("id");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,38 +20,74 @@ const UserBookings = ({  }) => {
       }
     };
 
-    fetchBookings(id);
+    fetchBookings();
   }, []);
 
-  if (loading) return <p className="text-center">Loading your bookings...</p>;
+  if (loading) return <p className="text-center text-gray-600">Loading your bookings...</p>;
 
   if (!Array.isArray(bookings) || bookings.length === 0) {
-    return <p className="text-center text-gray-600">No bookings found.</p>;
+    return <p className="text-center text-gray-500">No bookings found.</p>;
   }
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center m-8">My Bookings</h2>
+    <div className="p-6 max-w-7xl mx-auto">
+      <h2 className="text-3xl font-bold mb-8 text-red-600 text-center">Your Bookings</h2>
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {bookings.map((booking) => (
           <div
             key={booking.booking_id}
-            className="bg-white shadow-md rounded-lg p-4 border hover:shadow-lg transition"
+            className="relative bg-white border rounded-xl shadow-md p-6 hover:shadow-lg transition"
           >
-            <h3 className="text-xl font-semibold mb-2 text-indigo-600">{booking.event_title}</h3>
-            <p><strong>Venue:</strong> {booking.venue_name}, {booking.city}</p>
-            <p><strong>Show Date:</strong> {booking.show_date}</p>
-            <p><strong>Time:</strong> {booking.start_time} - {booking.end_time}</p>
-            <p><strong>Seat:</strong> #{booking.seat_number} ({booking.seat_category})</p>
-            <p><strong>Price:</strong> ₹{booking.price}</p>
-            <p><strong>Booking Status:</strong> <span className="capitalize">{booking.payment_status}</span></p>
-            {booking.transaction_id && (
-              <>
-                <p><strong>Transaction:</strong> {booking.transaction_id}</p>
-                <p><strong>Amount Paid:</strong> ₹{booking.amount}</p>
-              </>
-            )}
-            <p className="text-xs text-gray-500 mt-2">Booked on {new Date(booking.booking_time).toLocaleString()}</p>
+            {/* Ticket Icon */}
+            <div className="absolute top-4 right-4 text-red-500 text-xl">
+              <FaTicketAlt />
+            </div>
+
+            {/* Event Title */}
+            <h3 className="text-xl font-semibold text-indigo-700 mb-2">{booking.event_title}</h3>
+
+            {/* User Info */}
+            <p className="text-sm text-gray-700 mb-1">
+              <strong>Booked by:</strong> {booking.username}
+            </p>
+            <p className="text-sm text-gray-700 mb-2">
+              <strong>Email:</strong> {booking.user_email}
+            </p>
+
+            {/* Seat Info */}
+            <p className="text-sm text-gray-700 mb-1">
+              <strong>Seat:</strong> #{booking.seat_number} ({booking.seat_category})
+            </p>
+
+            {/* Price */}
+            <p className="text-sm text-gray-700 mb-1">
+              <strong>Price:</strong> ₹{booking.price}
+            </p>
+
+            {/* Show Date and Time */}
+            <p className="text-sm text-gray-700 mb-1">
+              <strong>Show Date:</strong> {new Date(booking.show_date).toLocaleDateString()}
+            </p>
+            <p className="text-sm text-gray-700 mb-2">
+              <strong>Time:</strong> {booking.start_time} - {booking.end_time}
+            </p>
+
+            {/* Booking Time */}
+            <p className="text-xs text-gray-500 mb-3">
+              <strong>Booked on:</strong> {new Date(booking.booking_time).toLocaleString()}
+            </p>
+
+            {/* Payment Status */}
+            <span
+              className={`text-sm font-bold px-3 py-1 rounded-full ${
+                booking.payment_status === 'paid'
+                  ? 'bg-yellow-200 text-yellow-800'
+                  : 'bg-yellow-100 text-yellow-700'
+              }`}
+            >
+              {booking.payment_status.toUpperCase()}
+            </span>
           </div>
         ))}
       </div>

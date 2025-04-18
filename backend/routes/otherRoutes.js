@@ -2,7 +2,9 @@ import express from 'express';
 import multer from 'multer';
 import { createEvent, getEventsByOrganizer, getEventsByCategoryAndOrganizer, getEventsByCityAndOrganizer, getEventsById, getTopEventByLikes, createShow, getAllShowsOfAnEvent, getEventsByCity, getEventsByCategory, getVenueById, getAllBookingsOfAnOrganizer, getEventwiseEarningofOrganizer, getAllBookingsOfAUser, getLikedEventsByUser, likeEvent, unlikeEvent, getEventsByDateandCity } from "../controller/eventController.js";
 import { fetchSeats , bookSeats } from '../controller/ticketBookingController.js';
-import { capturePayment, createPayment } from '../controller/paymentController.js';
+import { capturePayment, createBooking } from '../controller/paymentController.js';
+import { createReview, getEventReviews } from '../controller/ReviewController.js';
+import { getAllOrganizers, getAllUsers, getUserbyEmail } from '../controller/AdminController.js';
 
 const router = express.Router();
 
@@ -24,12 +26,19 @@ router.get('/eventwiseearning/:id' , getEventwiseEarningofOrganizer)
 router.get('/likedevents/:id' , getLikedEventsByUser);
 router.post('/likeevent' , likeEvent);
 router.post('/unlikeevent' , unlikeEvent);
-// router.get('/event/search' , searchEvents);
-// router.post('/show/booking/hold' , holdSeats );
 router.post('/show/booking/confirm' , bookSeats);
 
-router.post('/booking/create-payment', createPayment);
+router.post('/booking/create-payment', createBooking);
 router.post('/booking/capture-payment', capturePayment);
+
+
+
+router.get('/admin/users' , getAllUsers);
+router.get('/admin/organizers' , getAllOrganizers);
+router.get('/user/:id' , getUserbyEmail);
+
+router.post('/reviews', createReview);               
+router.get('/reviews/:id', getEventReviews);   
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, "uploads/"), // Save files in 'uploads' folder

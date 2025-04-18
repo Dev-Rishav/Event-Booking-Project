@@ -1,5 +1,6 @@
 import Event from '../model/eventModel.js';
 import pool from '../database/db.js';
+import { io } from '../index.js';
 
 export const getEventsByOrganizer = async(req ,res) => {
     try {
@@ -29,6 +30,14 @@ export const createEvent = async (req, res) => {
         
         console.log(result);
         
+        io.emit('new-event', {
+            message: `A new event ${title} has been created!`,
+            event: {
+              title,
+              event_date
+            }
+          });
+          
         return res.status(201).json({ msg: "Created new event", result });
     } catch (error) {
         console.error("Error creating event:", error); // ✅ Better error logging
@@ -350,9 +359,10 @@ export const unlikeEvent = async(req,res) => {
 export const getLikedEventsByUser = async(req,res) => {
     const user_id = req.params.id;
     try {
+        // console.log(user_id);
         const result = await Event.getLikedEventsByUser(user_id);
         if(!result){
-            return res.status(401).json({ error: "No events available" });
+            return res.status(401).json({ error: "No liked events available" });
         }
         return res.json({msg :"All liked events are : " , result});
     } catch (error) {

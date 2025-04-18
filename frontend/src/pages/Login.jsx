@@ -34,6 +34,8 @@ const Login = () => {
         navigation("/user/dashboard");
       } else if (role === "organizer") {
         navigation("/organizer/home");
+      } else if (role === "admin") {
+        navigation("/admin/dashboard");
       } 
     } catch (error) {
       setError("Failed to Login");

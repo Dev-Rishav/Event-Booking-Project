@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 const UserEvents = () => {
 
-      const navigate = useNavigate();
-      
+    const navigate = useNavigate();
+
     const {
         userEvents,
         fetchEvents,
@@ -121,11 +121,17 @@ const UserEvents = () => {
                                 <button
                                     className="mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                                     onClick={() => {
-                                      selectUserEvent(event);
-                                      navigate("/user/showlist");
+                                        selectUserEvent(event);
+                                        navigate("/user/showlist");
                                     }}
                                 >
                                     View Shows
+                                </button>
+                                <button
+                                    className="bg-blue-600 text-white px-7 py-2 rounded hover:bg-blue-700 ml-8"
+                                    onClick={() => navigate(`/user/reviews/${event.event_id}`)}
+                                >
+                                    Reviews
                                 </button>
                             </div>
                         </div>

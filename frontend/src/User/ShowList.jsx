@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ShowList = () => {
-  const { userShows, selectedUserEvent, setSelectedUserEvent, fetchShowsofAnEvent } = useUser();
+  const { userShows, selectedUserEvent, setSelectedUserEvent, fetchShowsofAnEvent  , selectUserShow , selectedUserShow } = useUser();
   const navigate = useNavigate();
 
   // Load selectedEvent from localStorage if it's null
@@ -43,8 +43,12 @@ const ShowList = () => {
               <p><strong>Seats:</strong> {userShow.total_seats}</p>
             </div>
             <button
-              onClick={() => navigate(`/user/ticket-booking/${userShow.show_id}`)}
-              className="bg-blue-600 text-white px-4 py-2 rounded"
+             className="bg-blue-600 text-white px-4 py-2 rounded"
+              onClick={() => { 
+                selectUserShow(userShow);
+                navigate(`/user/ticket-booking/${userShow.show_id}`);
+                // console.log(selectedUserShow);
+              }}
             >
               Book Tickets
             </button>

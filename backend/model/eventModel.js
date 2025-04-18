@@ -74,7 +74,7 @@ const Event = {
         return result.rows;
     },
 
-    getEventsByCategory: async (city , category) => {
+    getEventsByCategory: async (city, category) => {
         const query = `
        SELECT e.*, v.city
       FROM events e
@@ -83,11 +83,11 @@ const Event = {
       WHERE v.city = $1 AND e.category = $2 AND e.status = 'active'
       GROUP BY e.event_id, v.city
         `;
-        const result = await pool.query(query, [city , category]);
+        const result = await pool.query(query, [city, category]);
         return result.rows;
     },
 
-    getEventsByDateandCity: async(city , event_date) => {
+    getEventsByDateandCity: async (city, event_date) => {
         const query = `SELECT DISTINCT e.*, v.city
       FROM events e
       JOIN shows s ON e.event_id = s.event_id
@@ -96,8 +96,8 @@ const Event = {
       AND e.event_date = $2
       AND e.status = 'active'
       GROUP BY e.event_id, v.city`;
-      const result = await pool.query(query , [city , event_date]);
-      return result.rows;
+        const result = await pool.query(query, [city, event_date]);
+        return result.rows;
     },
 
 
@@ -126,26 +126,26 @@ const Event = {
         return result.rows[0]; // return single venue object
     },
 
-    likeEvent: async(user_id , event_id) => {
+    likeEvent: async (user_id, event_id) => {
         const query = `INSERT INTO likedevents (user_id, event_id)
                        VALUES ($1 , $2);`;
-        const result = await pool.query(query , [user_id , event_id]);
+        const result = await pool.query(query, [user_id, event_id]);
         return result.rows;
     },
 
-    unlikeEvent: async(user_id , event_id) => {
+    unlikeEvent: async (user_id, event_id) => {
         const query = `DELETE FROM likedevents WHERE user_id = $1 AND event_id = $2`;
-        const result = await pool.query(query , [user_id , event_id]);
+        const result = await pool.query(query, [user_id, event_id]);
         return result.rows;
     },
 
-    getLikedEventsByUser: async(user_id) => {
+    getLikedEventsByUser: async (user_id) => {
         const query = `SELECT e.*
                        FROM likedevents le
                        JOIN events e ON le.event_id = e.event_id
-                       WHERE le.user_id = $1;
+                       WHERE le.user_id = $1
                        `;
-        const result = pool.query(query , [user_id]);
+        const result = await pool.query(query, [user_id]);
         return result.rows;
     },
 
@@ -173,92 +173,99 @@ const Event = {
     },
 
     getAllBookingsOfAnOrganizer: async (organizer_id) => {
-        const query = `SELECT 
-                       b.booking_id,
-                       b.created_at AS booking_time,
-                       b.payment_status,
-                       s.seat_number,
-                       s.seat_category,
-                       s.price,
-                       sh.show_id,
-                       sh.start_time,
-                       sh.end_time,
-                       sh.show_date,
-                       e.title AS event_title,
-                       u.name AS booked_by,
-                       u.email AS user_email
-                       FROM bookings b
-                       JOIN seats s ON b.seat_id = s.seat_id
-                       JOIN shows sh ON b.show_id = sh.show_id
-                       JOIN events e ON sh.event_id = e.event_id
-                       JOIN users u ON b.user_id = u.email
-                       WHERE e.organizer_id = $1
-                       ORDER BY sh.show_date, sh.start_time;`
-        const result = await pool.query(query , [organizer_id]);
+        const query = `
+            SELECT 
+                b.booking_id,
+                b.created_at AS booking_time,
+                b.payment_status,
+                se.seat_number,
+                se.seat_category,
+                se.price,
+                sh.show_id,
+                sh.start_time,
+                sh.end_time,
+                sh.show_date,
+                e.title AS event_title,
+                u.name AS booked_by,
+                u.email AS user_email
+            FROM bookings b
+            JOIN seats se ON b.seat_id = se.seat_id
+            JOIN shows sh ON b.show_id = sh.show_id
+            JOIN events e ON sh.event_id = e.event_id
+            JOIN users u ON b.user_id = u.email
+            WHERE e.organizer_id = $1
+            ORDER BY sh.show_date, sh.start_time;
+        `;
+        const result = await pool.query(query, [organizer_id]);
         return result.rows;
     },
 
-    getEventwiseEarningofOrganizer: async(organizer_id) => {
-        const query = `SELECT 
-                           e.event_id,
-                           e.title AS event_title,
-                           SUM(p.amount) AS total_earnings
-                       FROM 
-                           events e
-                       JOIN shows s ON s.event_id = e.event_id
-                       JOIN bookings b ON b.show_id = s.show_id
-                       JOIN payment p ON p.booking_id = b.booking_id
-                       WHERE 
-                           e.organizer_id = $1
-                           AND p.status = 'success'                
-                       GROUP BY 
-                           e.event_id, e.title;`
-        const result = await pool.query(query , [organizer_id]);
+
+    getEventwiseEarningofOrganizer: async (organizer_id) => {
+        const query = `
+            SELECT 
+                e.event_id,
+                e.title AS event_title,
+                SUM(p.amount) AS total_earnings
+            FROM events e
+            JOIN shows sh ON sh.event_id = e.event_id
+            JOIN bookings b ON b.show_id = sh.show_id
+            JOIN payment p ON b.transaction_id = p.transaction_id
+            WHERE 
+                e.organizer_id = $1
+                AND p.status = 'paid'
+            GROUP BY e.event_id, e.title;
+        `;
+        const result = await pool.query(query, [organizer_id]);
         return result.rows;
     },
 
-    getAllBookingsOfAUser: async(user_id) => {
-        const query = `SELECT 
-                       b.booking_id,
-                       b.user_id,
-                       b.payment_status,
-                       b.created_at AS booking_time,
-                       
-                       e.event_id,
-                       e.title AS event_title,
-                       e.category,
-                       e.event_date,
-                       
-                       s.show_id,
-                       s.show_date,
-                       s.start_time,
-                       s.end_time,
-                       
-                       se.seat_id,
-                       se.seat_number,
-                       se.seat_category,
-                       se.price,
-                   
-                       v.name AS venue_name,
-                       v.city,
-                       v.address,
-                   
-                       p.transaction_id,
-                       p.amount,
-                       p.status AS payment_status,
-                       p.created_at AS payment_time
-                   
-                   FROM bookings b
-                   JOIN shows s ON b.show_id = s.show_id
-                   JOIN events e ON s.event_id = e.event_id
-                   JOIN seats se ON b.seat_id = se.seat_id
-                   JOIN venues v ON s.venue_id = v.venue_id
-                   LEFT JOIN payment p ON b.booking_id = p.booking_id
-                   WHERE b.user_id = $1
-                   ORDER BY b.created_at DESC;`
-        const result = await pool.query(query , [user_id]);
+
+    getAllBookingsOfAUser: async (user_id) => {
+        const query = `
+            SELECT 
+                b.booking_id,
+                b.user_id,
+                b.payment_status,
+                b.created_at AS booking_time,
+                
+                e.event_id,
+                e.title AS event_title,
+                e.category,
+                e.event_date,
+                
+                s.show_id,
+                s.show_date,
+                s.start_time,
+                s.end_time,
+                
+                se.seat_id,
+                se.seat_number,
+                se.seat_category,
+                se.price,
+            
+                v.name AS venue_name,
+                v.city,
+                v.address,
+            
+                p.transaction_id,
+                p.amount,
+                p.status AS payment_status,
+                p.created_at AS payment_time
+            
+            FROM bookings b
+            JOIN shows s ON b.show_id = s.show_id
+            JOIN events e ON s.event_id = e.event_id
+            JOIN seats se ON b.seat_id = se.seat_id
+            JOIN venues v ON s.venue_id = v.venue_id
+            LEFT JOIN payment p ON b.transaction_id = p.transaction_id
+            WHERE b.user_id = $1
+            ORDER BY b.created_at DESC;
+        `;
+        const result = await pool.query(query, [user_id]);
         return result.rows;
     },
+
 
 }
 
