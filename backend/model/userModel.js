@@ -1,9 +1,17 @@
 import pool from "../database/db.js";
 
 const User = {
-    create: async(email,name,phone,password,role) => {
+    create: async(email,name,phone,password,role, interests = []) => {
       const query = "INSERT INTO users (email,name,phone,password,role) VALUES ($1, $2, $3,$4,$5)";
       const result = await pool.query(query, [email,name,phone,password,role]);
+
+      if (interests && interests.length > 0) {
+        for (const category of interests) {
+          const interestQuery = "INSERT INTO user_interests (user_id, category) VALUES ($1, $2)";
+          await pool.query(interestQuery, [email, category]);
+        }
+      }
+
       return result.rows[0];
     },
     

@@ -19,14 +19,14 @@ export const createEvent = async (req, res) => {
     // console.log(req.body);
     
     try {
-        const { title, description, category, event_date, organizer_id, status} = req.body;
+        const { title, description, category, organizer_id , start_date , end_date , venue_id} = req.body;
         const image = req.file ? `/uploads/${req.file.filename}` : null;
 
-        if (!title || !description || !category || !event_date || !organizer_id) {
+        if (!title || !description || !category || !organizer_id || !start_date || !end_date || !venue_id) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
-        const result = await Event.createEvent({title, description, category, event_date, organizer_id, image , status});
+        const result = await Event.createEvent({title, description, category, organizer_id, image , start_date , end_date , venue_id});
         
         console.log(result);
         
@@ -34,7 +34,7 @@ export const createEvent = async (req, res) => {
             message: `A new event ${title} has been created!`,
             event: {
               title,
-              event_date
+              start_date
             }
           });
           
@@ -45,39 +45,18 @@ export const createEvent = async (req, res) => {
     }
 }
 
-// export const createShow = async (req, res) => {
-//     // console.log(req.body);
-    
-//     try {
-//         const { event_id , venue_id , start_time , end_time , total_seats , show_date} = req.body;
-//         // const image = req.file ? `/uploads/${req.file.filename}` : null;
-
-//         // if (!title || !description || !category || !duration || !organizer_id) {
-//         //     return res.status(400).json({ error: "All fields are required" });
-//         // }
-
-//         const result = await Event.createShowForAnEvent({event_id , venue_id , start_time , end_time , total_seats , show_date});
-        
-//         // console.log(result);
-        
-//         return res.status(201).json({ msg: "Created new show : ", result });
-//     } catch (error) {
-//         console.error("Error creating show:", error); // ✅ Better error logging
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// }
 
 export const createShow = async (req, res) => {
     // console.log(req.body);
     try {
       const { event_id, venue_id, start_time, end_time, total_seats, show_date , regular_ticket_price , vip_ticket_price } = req.body;
   
-      // Step 1: Create the show
+      
       const result = await Event.createShowForAnEvent({
         event_id, venue_id, start_time, end_time, total_seats, show_date,
       });
   
-      const show_id = result.show_id; //Get the newly created show ID
+      const show_id = result.show_id; 
     //   console.log(show_id);
       
       const generateStructuredSeats = (show_id, totalSeats) => {
@@ -371,60 +350,51 @@ export const getLikedEventsByUser = async(req,res) => {
     }
 }
 
-// export const searchEvents = async (req, res) => {
-//     try {
-//       const { city, category, date } = req.query;
+export const getEventsByCityAndInterest = async (req, res) => {
+    const user_id = req.params.id;
+    const city = req.query.city;
   
-//       // Base query with correct joins using shows
-//       let query = `
-//         SELECT 
-//           DISTINCT e.event_id, 
-//           e.title, 
-//           e.description, 
-//           e.category, 
-//           e.event_date, 
-//           e.organizer_id, 
-//           e.image, 
-//           e.likes_count, 
-//           e.status, 
-//           e.created_at, 
-//           v.name AS venue_name, 
-//           v.city
-//         FROM events e
-//         JOIN shows s ON e.event_id = s.event_id
-//         JOIN venues v ON s.venue_id = v.venue_id
-//         WHERE 1=1
-//       `;
+    if (!user_id || !city) {
+      return res.status(400).json({ error: "User ID and city are required." });
+    }
   
-//       const params = [];
+    try {
+      const result = await Event.getEventsByCityAndInterest(user_id, city);
+      res.status(200).json({ result });
+    } catch (err) {
+      console.error("Error fetching recommended events:", err);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  }
+
+export const getOngoingEventsByCity = async (req, res) => {
+    const city = req.query.city;
   
-//       // Dynamically add filters
-//       if (city) {
-//         query += ` AND v.city = $${params.length + 1}`;
-//         params.push(city);
-//       }
+    if (!city) {
+      return res.status(400).json({ error: "City is required." });
+    }
   
-//       if (category) {
-//         query += ` AND e.category = $${params.length + 1}`;
-//         params.push(category);
-//       }
+    try {
+      const result = await Event.getOngoingEventsByCity(city);
+      res.status(200).json({ result});
+    } catch (err) {
+      console.error("Error fetching ongoing events:", err);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  }
+
+  export const getUpcomingEventsByCity = async (req, res) => {
+    const city = req.query.city;
   
-//       if (date) {
-//         query += ` AND e.event_date = $${params.length + 1}`;
-//         params.push(date);
-//       }
+    if (!city) {
+      return res.status(400).json({ error: "City is required." });
+    }
   
-//       query += ` ORDER BY e.event_date`;
-  
-//       const result = await pool.query(query, params);
-  
-//       if (result.rows.length === 0) {
-//         return res.status(404).json({ message: 'No events found matching your criteria' });
-//       }
-  
-//       return res.status(200).json({ result: result.rows });
-//     } catch (error) {
-//       return res.status(500).json({ message: 'Internal server error', error: error.message });
-//     }
-//   };
-  
+    try {
+      const result = await Event.getUpcomingEventsByCity(city);
+      res.status(200).json({ result });
+    } catch (err) {
+      console.error("Error fetching ongoing events:", err);
+      res.status(500).json({ error: "Internal server error." });
+    }
+  }

@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { createEvent, getEventsByOrganizer, getEventsByCategoryAndOrganizer, getEventsByCityAndOrganizer, getEventsById, getTopEventByLikes, createShow, getAllShowsOfAnEvent, getEventsByCity, getEventsByCategory, getVenueById, getAllBookingsOfAnOrganizer, getEventwiseEarningofOrganizer, getAllBookingsOfAUser, getLikedEventsByUser, likeEvent, unlikeEvent, getEventsByDateandCity } from "../controller/eventController.js";
+import { createEvent, getEventsByOrganizer, getEventsByCategoryAndOrganizer, getEventsByCityAndOrganizer, getEventsById, getTopEventByLikes, createShow, getAllShowsOfAnEvent, getEventsByCity, getEventsByCategory, getVenueById, getAllBookingsOfAnOrganizer, getEventwiseEarningofOrganizer, getAllBookingsOfAUser, getLikedEventsByUser, likeEvent, unlikeEvent, getEventsByDateandCity, getEventsByCityAndInterest, getOngoingEventsByCity , getUpcomingEventsByCity } from "../controller/eventController.js";
 import { fetchSeats , bookSeats } from '../controller/ticketBookingController.js';
 import { capturePayment, createBooking } from '../controller/paymentController.js';
 import { createReview, getEventReviews } from '../controller/ReviewController.js';
@@ -39,6 +39,11 @@ router.get('/user/:id' , getUserbyEmail);
 
 router.post('/reviews', createReview);               
 router.get('/reviews/:id', getEventReviews);   
+
+
+router.get('/userinterestevents/:id' , getEventsByCityAndInterest);
+router.get('/ongoingevents' , getOngoingEventsByCity);
+router.get('/upcomingevents' , getUpcomingEventsByCity);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, "uploads/"), // Save files in 'uploads' folder

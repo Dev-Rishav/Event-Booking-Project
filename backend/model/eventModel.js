@@ -9,15 +9,15 @@ const Event = {
     },
 
     createEvent: async (eventData) => {
-        const { title, description, category, event_date, organizer_id, image, status } = eventData;
+        const { title, description, category, organizer_id, image , start_date , end_date , venue_id } = eventData;
 
         const query = `
-            INSERT INTO events (title, description, category, event_date, organizer_id, image , status)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            INSERT INTO events (title, description, category , organizer_id, image , start_date , end_date , venue_id)
+            VALUES ($1, $2, $3, $4, $5, $6, $7 , $8 )
             RETURNING *;
         `;
 
-        const values = [title, description, category, event_date, organizer_id, image, status || 'active'];
+        const values = [title, description, category, organizer_id, image , start_date , end_date , venue_id || 'active'];
 
         const result = await pool.query(query, values);
         return result.rows[0];
@@ -76,29 +76,28 @@ const Event = {
 
     getEventsByCategory: async (city, category) => {
         const query = `
-       SELECT e.*, v.city
-      FROM events e
-      JOIN shows s ON e.event_id = s.event_id
-      JOIN venues v ON s.venue_id = v.venue_id
-      WHERE v.city = $1 AND e.category = $2 AND e.status = 'active'
-      GROUP BY e.event_id, v.city
+          SELECT e.*, v.city
+          FROM events e
+          JOIN venues v ON e.venue_id = v.venue_id
+          WHERE v.city = $1 AND e.category = $2 AND e.status = 'ongoing'
         `;
         const result = await pool.query(query, [city, category]);
         return result.rows;
-    },
+      },
 
-    getEventsByDateandCity: async (city, event_date) => {
-        const query = `SELECT DISTINCT e.*, v.city
-      FROM events e
-      JOIN shows s ON e.event_id = s.event_id
-      JOIN venues v ON s.venue_id = v.venue_id
-      WHERE v.city = $1
-      AND e.event_date = $2
-      AND e.status = 'active'
-      GROUP BY e.event_id, v.city`;
+      getEventsByDateandCity: async (city, event_date) => {
+        const query = `
+          SELECT e.*, v.city
+          FROM events e
+          JOIN venues v ON e.venue_id = v.venue_id
+          WHERE v.city = $1
+            AND $2::timestamp BETWEEN e.start_date AND e.end_date
+            AND e.status = 'ongoing'
+        `;
         const result = await pool.query(query, [city, event_date]);
         return result.rows;
-    },
+      },
+      
 
 
     getEventsById: async (event_id) => {
@@ -232,7 +231,8 @@ const Event = {
                 e.event_id,
                 e.title AS event_title,
                 e.category,
-                e.event_date,
+                e.start_date,
+                e.end_date,
                 
                 s.show_id,
                 s.show_date,
@@ -264,6 +264,43 @@ const Event = {
         `;
         const result = await pool.query(query, [user_id]);
         return result.rows;
+    },
+
+    getEventsByCityAndInterest : async(user_id , city) => {
+        const query = `
+        SELECT e.*
+        FROM events e
+        JOIN venues v ON e.venue_id = v.venue_id
+        JOIN user_interests ui ON e.category = ui.category
+        WHERE ui.user_id = $1 AND LOWER(v.city) = LOWER($2)
+        ORDER BY e.start_date ASC;
+      `;
+      const result = await pool.query(query , [user_id , city]);
+      return result.rows;
+    },
+
+    getOngoingEventsByCity : async(city) => {
+        const query = `
+        SELECT e.*
+        FROM events e
+        JOIN venues v ON e.venue_id = v.venue_id
+        WHERE e.status = 'ongoing' AND LOWER(v.city) = LOWER($1)
+        ORDER BY e.start_date ASC;
+      `;
+      const result = await pool.query(query , [city]);
+      return result.rows;
+    },
+
+    getUpcomingEventsByCity : async(city) => {
+        const query = `
+        SELECT e.*
+        FROM events e
+        JOIN venues v ON e.venue_id = v.venue_id
+        WHERE e.status = 'upcoming' AND LOWER(v.city) = LOWER($1)
+        ORDER BY e.start_date ASC;
+      `;
+      const result = await pool.query(query , [city]);
+      return result.rows;
     },
 
 

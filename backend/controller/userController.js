@@ -4,22 +4,27 @@ import User from '../model/userModel.js';
 
 export const register = async (req, res) => {
     try {
-        const { email, name, phone, password, role } = req.body;
+        const { email, name, phone, password, role , interests } = req.body;
 
-        // Hash the password
+        if (interests && !Array.isArray(interests)) {
+            return res.status(400).json({ error: "Interests must be an array" });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Debugging logs
-        // console.log("Received Data:", req.body);
+        
+        const result = await User.create(email, name, phone, hashedPassword, role , interests);
 
-        // Create User in DB (assuming User.create is a DB function)
-        const result = await User.create(email, name, phone, hashedPassword, role);
-
-        // If user is successfully created
+       
         res.status(201).json({ message: 'User registered successfully', user: result });
 
     } catch (error) {
         console.error("Error in register function:", error);
+
+        if (error.code === '23505' && error.constraint === 'user_interests_user_id_category_key') {
+            return res.status(400).json({ error: "Duplicate interest category for user" });
+        }
+        
         res.status(500).json({ error: "Internal server error" });
     }
 };

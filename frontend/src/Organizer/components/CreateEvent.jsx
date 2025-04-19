@@ -6,9 +6,11 @@ const CreateEvent = () => {
 
     const [eventData, setEventData] = useState({
         title: "",
+        venue_id: "",
         description: "",
         category: "",
-        event_date: "",
+        start_date: "",
+        end_date: "",
         organizer_id: "",
     });
 
@@ -30,9 +32,11 @@ const CreateEvent = () => {
             alert("Event created successfully!");
             setEventData({
                 title: "",
+                venue_id: "",
                 description: "",
                 category: "",
-                event_date: "",
+                start_date: "",
+                end_date: "",
                 organizer_id: "",
             });
             setImage(null);
@@ -74,8 +78,24 @@ const CreateEvent = () => {
                 <input
                     className="w-full p-2 border rounded"
                     type="date"
-                    name="event_date"
-                    value={eventData.event_date}
+                    name="start_date"
+                    value={eventData.start_date}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    className="w-full p-2 border rounded"
+                    type="date"
+                    name="end_date"
+                    value={eventData.end_date}
+                    onChange={handleChange}
+                    required
+                />
+                <input
+                    className="w-full p-2 border rounded"
+                    type="number"
+                    name="venue_id"
+                    value={eventData.venue_id}
                     onChange={handleChange}
                     required
                 />

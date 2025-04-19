@@ -28,7 +28,7 @@ const AdminSidebar = () => {
     <>
       {/* Navbar - Fixed at the top */}
       <div className="bg-gray-900 text-white fixed top-0 left-0 w-full h-16 flex justify-between items-center px-6 shadow-md z-50">
-        <h1 className="text-xl font-bold ml-16">Admin Panel</h1>
+        <h1 className="text-xl font-bold ml-16">Vikas + atul</h1> 
         <button
           onClick={handleLogout}
           className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"

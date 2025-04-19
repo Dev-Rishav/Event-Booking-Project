@@ -1,10 +1,10 @@
 import React from 'react';
-import EventCards from './UserEvents';
+import UserEvents from './UserEvents';
 
 const UserDashboard = () => {
     return (
         <div className='mt-12'>
-            <EventCards />
+            <UserEvents />
         </div>
     )
 }

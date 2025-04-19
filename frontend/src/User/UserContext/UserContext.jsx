@@ -20,6 +20,9 @@ const UserProvider = ({ children }) => {
     const userId = Cookies.get("id");
     const [city, setCity] = useState("");
     const [userEvents, setUserEvents] = useState([]);
+    const [recommenededEvents , setRecommenededEvents] = useState([]);
+    const [upcomingEvents , setUpcomingEvents] = useState([]);
+    const [ongoingEvents , setOngoingEvents] = useState([]);
     const [seats, setSeats] = useState([]);
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [userShows, setUserShows] = useState([]);
@@ -148,6 +151,41 @@ const UserProvider = ({ children }) => {
         }
     }
 
+    const fetchRecommendedEvents = async(city) => {
+        try {
+            const response = await axios.get(`http://localhost:8001/api/userinterestevents/${userId}?city=${city}`);
+            setRecommenededEvents(response.data.result);
+            setError(null);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const fetchOngoingEvents = async(city) => {
+        try {
+            const response = await axios.get(`http://localhost:8001/api/ongoingevents?city=${city}`);
+            setOngoingEvents(response.data.result);
+            setError(null);
+        }  catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const fetchUpcomingEvents = async(city) => {
+        try {
+            const response = await axios.get(`http://localhost:8001/api/upcomingevents?city=${city}`);
+            setUpcomingEvents(response.data.result);
+            setError(null);
+        }  catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    }
 
     const fetchEventsByCityUser = async (city) => {
         setLoading(true);
@@ -215,22 +253,25 @@ const UserProvider = ({ children }) => {
                 loading,
                 userEvents,
                 userShows,
+                selectedUserShow,
+                selectedUserEvent,
                 city,
                 seats,
                 selectedSeats,
                 notifications,
                 hasNewNotification,
+                recommenededEvents,
+                ongoingEvents,
+                upcomingEvents,
                 clearNotificationBadge,
                 removeNotification,
                 selectUserShow,
                 setSelectedUserShow,
-                selectedUserShow,
                 setUserEvents,
                 setCity,
                 setSelectedSeats,
                 fetchSeats,
                 createBookingAndRedirect,
-                selectedUserEvent,
                 fetchEventsByCityAndDate,
                 fetchEvents,
                 fetchLikedEvents,
@@ -238,7 +279,10 @@ const UserProvider = ({ children }) => {
                 setSelectedUserEvent,
                 fetchEventsByCategoryAndCityUser,
                 fetchEventsByCityUser,
-                fetchShowsofAnEvent
+                fetchShowsofAnEvent,
+                fetchRecommendedEvents,
+                fetchOngoingEvents,
+                fetchUpcomingEvents
             }}
         >
             {children}

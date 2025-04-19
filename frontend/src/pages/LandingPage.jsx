@@ -129,7 +129,7 @@ const LandingPage = () => {
                         </Route>
                     </Routes>
                 </div>
-                <Footer />
+                {/* <Footer /> */}
             </Router>
         </div>
     );
