@@ -47,60 +47,37 @@ export const createEvent = async (req, res) => {
 
 
 export const createShow = async (req, res) => {
-    // console.log(req.body);
     try {
-      const { event_id, venue_id, start_time, end_time, total_seats, show_date , regular_ticket_price , vip_ticket_price } = req.body;
-  
-      
-      const result = await Event.createShowForAnEvent({
-        event_id, venue_id, start_time, end_time, total_seats, show_date,
+      const {
+        event_id,
+        venue_id,
+        start_time,
+        end_time,
+        show_date,
+        plan_name
+      } = req.body;
+
+      const result = await Event.createShowAndSeats({
+        event_id,
+        venue_id,
+        start_time,
+        end_time,
+        show_date,
+        plan_name
       });
-  
-      const show_id = result.show_id; 
-    //   console.log(show_id);
-      
-      const generateStructuredSeats = (show_id, totalSeats) => {
-        const seats = [];
-        const rows = Math.ceil(totalSeats / 10); // 10 seats per row
-        const vipThreshold = Math.floor(totalSeats * 0.2); // Top 20% VIP
-      
-        let seatCounter = 1;
-      
-        for (let row = 0; row < rows; row++) {
-          const rowLabel = String.fromCharCode(65 + row); // A, B, C...
-      
-          for (let num = 1; num <= 10 && seatCounter <= totalSeats; num++) {
-            const seat_number = `${rowLabel}${num}`; // like A1, A2...
-            const isVIP = seatCounter <= vipThreshold;
-            const seat_category = isVIP ? "VIP" : "Regular";
-            const price = isVIP ? vip_ticket_price : regular_ticket_price;
-      
-            seats.push({
-              seat_number,
-              show_id,
-              seat_category,
-              price,
-              status: "available",
-            });
-      
-            seatCounter++;
-          }
-        }
-      
-        return seats;
-      };
 
-      const generatedSeats = generateStructuredSeats(show_id, total_seats);
-      await Event.insertGeneratedSeats(generatedSeats);
-
-      return res.status(201).json({ msg: "Created new show : ", result });
-    //   return res.status(201).json({ message: "Show and seats created successfully!", show_id });
+      res.status(201).json({
+        message: 'Show and seats created successfully',
+        show_id: result.show_id,
+        total_seats: result.total_seats
+      });
     } catch (error) {
-      console.error("Error creating show and seats:", error);
-      return res.status(500).json({ error: "Internal server error" });
+      console.error('Error creating show:', error.message);
+      res.status(500).json({ error: error.message });
     }
-  };
-  
+  }
+
+
 
 export const getAllShowsOfAnEvent = async(req ,res) => {
     // console.log(req.body.event_id);

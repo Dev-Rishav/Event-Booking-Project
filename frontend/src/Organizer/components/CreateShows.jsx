@@ -1,36 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useEvent } from "../EventContext/EventContext"; // Assuming CreateShow is here
-// import axios from "axios";
+import { useEvent } from "../EventContext/EventContext"; 
 
 const CreateShows = () => {
     const { createShow } = useEvent();
-    const { eventId } = useParams(); // if route is /events/:eventId/create-show
-    // const [venues, setVenues] = useState("");
+    const { eventId } = useParams(); 
+
     const [formData, setFormData] = useState({
         venue_id: "",
         start_time: "",
         end_time: "",
-        total_seats: "",
         show_date: "",
-        vip_ticket_price:"",
-        regular_ticket_price:"",
+        plan_name: "", // e.g., 'theatre'
     });
 
     const [message, setMessage] = useState("");
-
-    // useEffect(() => {
-    //     // Fetch venue list
-    //     const fetchVenue = async () => {
-    //         try {
-    //             const response = await axios.get(`/api/event/venue/${venue_id}`);
-    //             setVenues(response.data);
-    //         } catch (error) {
-    //             console.error("Error fetching venues", error);
-    //         }
-    //     };
-    //     fetchVenue();
-    // }, []);
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -49,15 +33,13 @@ const CreateShows = () => {
         try {
             const response = await createShow(payload);
             setMessage("Show created successfully!");
-            console.log(response.data.result);
+            console.log(response.data);
             setFormData({
                 venue_id: "",
                 start_time: "",
                 end_time: "",
-                total_seats: "",
                 show_date: "",
-                vip_ticket_price: "",
-                regular_ticket_price: "",
+                plan_name: "",
             });
         } catch (error) {
             setMessage("Failed to create show.");
@@ -72,8 +54,8 @@ const CreateShows = () => {
             {message && <p className="text-center text-green-600 mb-4">{message}</p>}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-                    <label className="block font-semibold">Venue</label>
+                <div>
+                    <label className="block font-semibold">Venue ID</label>
                     <input
                         type="number"
                         name="venue_id"
@@ -121,40 +103,21 @@ const CreateShows = () => {
                 </div>
 
                 <div>
-                    <label className="block font-semibold">Total Seats</label>
-                    <input
-                        type="number"
-                        name="total_seats"
-                        value={formData.total_seats}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
-                        min={1}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label className="block font-semibold">VIP Seats Price</label>
-                    <input
-                        type="number"
-                        name="vip_ticket_price"
-                        value={formData.vip_ticket_price}
+                    <label className="block font-semibold">Seating Category</label>
+                    <select
+                        name="plan_name"
+                        value={formData.plan_name}
                         onChange={handleChange}
                         className="w-full p-2 border rounded"
                         required
-                    />
-                </div>
-
-                <div>
-                    <label className="block font-semibold">Regular Seats Price</label>
-                    <input
-                        type="number"
-                        name="regular_ticket_price"
-                        value={formData.regular_ticket_price}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
-                        required
-                    />
+                    >
+                        <option value="">Select Category</option>
+                        <option value="theatre">Theatre</option>
+                        <option value="stadium">Stadium</option>
+                        <option value="conference">Conference</option>
+                        <option value="open_air">Open Air</option>
+                        <option value="cinema">Cinema</option>
+                    </select>
                 </div>
 
                 <button

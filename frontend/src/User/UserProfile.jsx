@@ -59,83 +59,109 @@ const UserProfile = () => {
   if (error) return <div className="text-red-500 text-center mt-6">{error}</div>;
 
   return (
-    <div className="max-w-3xl mx-auto mt-16 bg-white border border-gray-200 shadow-lg rounded-3xl p-10 relative">
-      <div className="flex flex-col items-center">
-        <FaUserCircle className="text-[90px] text-indigo-600 mb-4" />
-        <h2 className="text-3xl font-bold text-gray-800 mb-8 tracking-wide">User Profile</h2>
-      </div>
-
-      <div className="space-y-8">
-        {/* Name */}
-        <div className="flex items-center gap-4">
-          <FaUserTag className="text-indigo-500 text-xl" />
-          <div>
-            <p className="text-sm text-gray-500">Name</p>
-            <p className="text-xl font-semibold text-gray-800">{user.name}</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
+          {/* Profile Header */}
+          <div className="bg-gradient-to-r from-gray-800 to-gray-600 p-8 text-center">
+            <div className="flex justify-center">
+              <FaUserCircle className="text-[90px] text-white bg-gray-300 rounded-full p-2 border-4 border-white shadow-lg" />
+            </div>
+            <h2 className="mt-4 text-3xl font-extrabold text-white tracking-tight">
+              User Profile
+            </h2>
+            <p className="mt-2 text-indigo-100">
+              Manage your account information
+            </p>
           </div>
-        </div>
 
-        {/* Email */}
-        <div className="flex items-center gap-4">
-          <FaEnvelope className="text-indigo-500 text-xl" />
-          <div>
-            <p className="text-sm text-gray-500">Email</p>
-            <p className="text-xl font-semibold text-gray-800">{user.email}</p>
-          </div>
-        </div>
-
-        {/* Role */}
-        <div className="flex items-center gap-4">
-          <FaUserTag className="text-indigo-500 text-xl" />
-          <div>
-            <p className="text-sm text-gray-500">Role</p>
-            <p className="capitalize text-xl font-semibold text-gray-800">{user.role}</p>
-          </div>
-        </div>
-
-        {/* Phone */}
-        <div className="flex items-start gap-4">
-          <FaPhoneAlt className="text-indigo-500 text-xl mt-1" />
-          <div className="w-full">
-            <p className="text-sm text-gray-500">Phone</p>
-            {editing ? (
-              <div className="flex flex-wrap items-center gap-3 mt-1">
-                <input
-                  type="text"
-                  value={newPhone}
-                  onChange={(e) => setNewPhone(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-4 py-2 w-full sm:w-60 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                />
-                <button
-                  onClick={handleSave}
-                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition"
-                  title="Save"
-                >
-                  <FaCheck />
-                </button>
-                <button
-                  onClick={() => {
-                    setEditing(false);
-                    setNewPhone(user.phone);
-                  }}
-                  className="bg-gray-300 hover:bg-gray-400 text-gray-700 p-2 rounded-full transition"
-                  title="Cancel"
-                >
-                  <FaTimes />
-                </button>
+          {/* Profile Content */}
+          <div className="px-8 py-10 sm:p-12">
+            <div className="space-y-8">
+              {/* Name */}
+              <div className="flex items-start gap-6 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200">
+                <div className="bg-indigo-100 p-3 rounded-full">
+                  <FaUserTag className="text-gray-700 text-xl" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Name</p>
+                  <p className="mt-1 text-xl font-semibold text-gray-800">{user.name}</p>
+                </div>
               </div>
-            ) : (
-              <div className="flex items-center justify-between mt-1">
-                <p className="text-xl font-semibold text-gray-800">{user.phone}</p>
-                <button
-                  onClick={() => setEditing(true)}
-                  className="text-indigo-600 hover:text-indigo-800 text-sm flex items-center gap-1 transition"
-                >
-                  <FaEdit />
-                  <span>Edit</span>
-                </button>
+
+              {/* Email */}
+              <div className="flex items-start gap-6 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200">
+                <div className="bg-indigo-100 p-3 rounded-full">
+                  <FaEnvelope className="text-gray-700 text-xl" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Email</p>
+                  <p className="mt-1 text-xl font-semibold text-gray-800 break-all">{user.email}</p>
+                </div>
               </div>
-            )}
+
+              {/* Role */}
+              <div className="flex items-start gap-6 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200">
+                <div className="bg-indigo-100 p-3 rounded-full">
+                  <FaUserTag className="text-gray-700 text-xl" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Role</p>
+                  <p className="mt-1 text-xl font-semibold text-gray-800 capitalize">{user.role}</p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-start gap-6 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-all duration-200">
+                <div className="bg-indigo-100 p-3 rounded-full">
+                  <FaPhoneAlt className="text-gray-700 text-xl" />
+                </div>
+                <div className="flex-1 w-full">
+                  <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">Phone</p>
+                  {editing ? (
+                    <div className="mt-2 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                      <input
+                        type="text"
+                        value={newPhone}
+                        onChange={(e) => setNewPhone(e.target.value)}
+                        className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                        placeholder="Enter new phone number"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          onClick={handleSave}
+                          className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+                        >
+                          <FaCheck />
+                          <span>Save</span>
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditing(false);
+                            setNewPhone(user.phone);
+                          }}
+                          className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg flex items-center gap-2 transition"
+                        >
+                          <FaTimes />
+                          <span>Cancel</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-1 flex justify-between items-center">
+                      <p className="text-xl font-semibold text-gray-800">{user.phone || 'Not provided'}</p>
+                      <button
+                        onClick={() => setEditing(true)}
+                        className="text-red-600 hover:text-gray-800 font-medium flex items-center gap-2 transition"
+                      >
+                        <FaEdit />
+                        <span>Edit</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
