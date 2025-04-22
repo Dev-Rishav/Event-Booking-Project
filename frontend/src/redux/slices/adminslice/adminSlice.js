@@ -5,8 +5,11 @@ import axios from 'axios';
 const initialState = {
   users: [],
   organizers: [],
+  plan : null ,
   loading: false,
   error: null,
+  approvalUrl: null,
+  success: false,
 };
 
 export const adminSlice = createSlice({
@@ -25,9 +28,24 @@ export const adminSlice = createSlice({
     setError: (state, action) => {
       state.error = action.payload;
     },
+    setApprovalUrl: (state, action) => {
+      state.approvalUrl = action.payload;
+    },
+    setSuccess: (state, action) => {
+      state.success = action.payload;
+    },
+    setPlan: (state, action) => {
+      state.plan = action.payload;
+    },
+    resetSubscription: (state) => {
+      state.loading = false;
+      state.error = null;
+      state.approvalUrl = '';
+      state.success = false;
+    },
   },
 });
 
-export const { setLoading, setUsers, setOrganizers, setError } = adminSlice.actions;
+export const { setLoading, setUsers, setOrganizers, setError , setSuccess , resetSubscription , setApprovalUrl , setPlan } = adminSlice.actions;
 
 export default adminSlice.reducer;

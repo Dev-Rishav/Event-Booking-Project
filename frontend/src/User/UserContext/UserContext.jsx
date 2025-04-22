@@ -20,9 +20,9 @@ const UserProvider = ({ children }) => {
     const userId = Cookies.get("id");
     const [city, setCity] = useState("");
     const [userEvents, setUserEvents] = useState([]);
-    const [recommenededEvents , setRecommenededEvents] = useState([]);
-    const [upcomingEvents , setUpcomingEvents] = useState([]);
-    const [ongoingEvents , setOngoingEvents] = useState([]);
+    const [recommenededEvents, setRecommenededEvents] = useState([]);
+    const [upcomingEvents, setUpcomingEvents] = useState([]);
+    const [ongoingEvents, setOngoingEvents] = useState([]);
     const [seats, setSeats] = useState([]);
     const [selectedSeats, setSelectedSeats] = useState([]);
     const [userShows, setUserShows] = useState([]);
@@ -151,7 +151,7 @@ const UserProvider = ({ children }) => {
         }
     }
 
-    const fetchRecommendedEvents = async(city) => {
+    const fetchRecommendedEvents = async (city) => {
         try {
             const response = await axios.get(`http://localhost:8001/api/userinterestevents/${userId}?city=${city}`);
             setRecommenededEvents(response.data.result);
@@ -163,24 +163,24 @@ const UserProvider = ({ children }) => {
         }
     }
 
-    const fetchOngoingEvents = async(city) => {
+    const fetchOngoingEvents = async (city) => {
         try {
             const response = await axios.get(`http://localhost:8001/api/ongoingevents?city=${city}`);
             setOngoingEvents(response.data.result);
             setError(null);
-        }  catch (error) {
+        } catch (error) {
             setError(error.message);
         } finally {
             setLoading(false);
         }
     }
 
-    const fetchUpcomingEvents = async(city) => {
+    const fetchUpcomingEvents = async (city) => {
         try {
             const response = await axios.get(`http://localhost:8001/api/upcomingevents?city=${city}`);
             setUpcomingEvents(response.data.result);
             setError(null);
-        }  catch (error) {
+        } catch (error) {
             setError(error.message);
         } finally {
             setLoading(false);
@@ -225,10 +225,10 @@ const UserProvider = ({ children }) => {
     };
 
 
-    const createBookingAndRedirect = async ({ userEmail, showId, selectedSeats, totalAmount }) => {
+    const createBookingAndRedirect = async ({ userId, showId, selectedSeats, totalAmount }) => {
         try {
             const response = await axios.post('http://localhost:8001/api/booking/create-payment', {
-                userEmail,
+                userId,
                 showId,
                 selectedSeats,
                 totalAmount,
@@ -244,6 +244,28 @@ const UserProvider = ({ children }) => {
             alert("Failed to initiate payment. Please try again.");
         }
     };
+
+
+
+    const downloadTicket = async (bookingDetails) => {
+        try {
+            const response = await axios.post(
+                'http://localhost:8001/api/generate-ticket',
+                { bookingDetails },
+                { responseType: 'blob' } // important for downloading files
+            );
+
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `ticket-${bookingDetails.ticketId}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+        } catch (error) {
+            console.error("Error downloading ticket:", error);
+        }
+    };
+
 
 
     return (
@@ -263,6 +285,7 @@ const UserProvider = ({ children }) => {
                 recommenededEvents,
                 ongoingEvents,
                 upcomingEvents,
+                downloadTicket,
                 clearNotificationBadge,
                 removeNotification,
                 selectUserShow,

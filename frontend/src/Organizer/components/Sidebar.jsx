@@ -2,7 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useUser } from "../../User/UserContext/UserContext";
-import { FaHome, FaMoneyBill, FaFilm, FaClipboardList, FaStar, FaBell, FaUser, FaBars } from "react-icons/fa";
+import { FaHome, FaMoneyBill, FaFilm, FaClipboardList, FaStar, FaBell, FaUser, FaBars ,FaCrown} from "react-icons/fa";
 import UserNotifications from "../../User/UserNotifications";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -23,8 +23,10 @@ const Sidebar = () => {
     { name: "Home", path: "/organizer/home", icon: <FaHome /> },
     { name: "Revenue", path: "/organizer/revenue", icon: <FaMoneyBill /> },
     { name: "Events", path: "/organizer/events", icon: <FaFilm /> },
+    { name: "Subscription", path: "/organizer/subscription", icon: <FaCrown /> },
     { name: "Bookings", path: "/organizer/bookings", icon: <FaClipboardList /> },
     { name: "Profile", path: "/organizer/profile", icon: <FaUser /> },
+    
   ];
 
   return (

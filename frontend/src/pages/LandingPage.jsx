@@ -21,6 +21,8 @@ import Revenue from '../Organizer/pages/Revenue';
 import EventDetails from '../Organizer/components/EventDetails';
 import CreateEvent from '../Organizer/components/CreateEvent';
 import CreateShows from '../Organizer/components/CreateShows';
+import PayPalSubscriptionReturn from '../Organizer/pages/PaypalSubscriptionReturn';
+import PaypalSubscriptionCancel from '../Organizer/pages/PaypalSubscriptionCancel';
 
 // User Components
 import UserLayout from '../components/UserLayout';
@@ -45,6 +47,9 @@ import AdminProfile from '../Admin/AdminProfile';
 import AdminUsersDetails from '../Admin/AdminUsersDetails';
 import AdminOrganizersDetails from '../Admin/AdminOrganizersDetails';
 import UserEventReviews from '../User/ UserEventReviews';
+import BookingSuccess from '../User/BookingSuccess';
+import Subscription from '../Organizer/pages/Subscription';
+import SubscriptionPlan from '../Organizer/pages/SubscriptionPlan';
 
 
 // Protected Route Component
@@ -54,6 +59,20 @@ const ProtectedRoute = ({ element, role }) => {
 
     if (!token) return <Navigate to="/login" replace />;
     if (role && userRole !== role) return <Navigate to="/" replace />;
+    return element;
+};
+
+const PublicRoute = ({ element }) => {
+    const token = Cookies.get("token");
+    const userRole = Cookies.get("role");
+
+    if (token) {
+        // User is logged in, redirect based on role
+        if (userRole === 'organizer') return <Navigate to="/organizer/home" replace />;
+        if (userRole === 'user') return <Navigate to="/user/dashboard" replace />;
+        if (userRole === 'admin') return <Navigate to="/admin/dashboard" replace />;
+    }
+
     return element;
 };
 
@@ -86,9 +105,9 @@ const LandingPage = () => {
                         <Route path="/redirect" element={<AutoRedirect />} />
 
                         {/* Public Routes */}
-                        <Route path="/" element={<Home />} />
-                        <Route path="/signup" element={<Signup />} />
-                        <Route path="/login" element={<Login />} />
+                        <Route path="/" element={<PublicRoute element={<Home />} />} />
+                        <Route path="/signup" element={<PublicRoute element={<Signup />} />} />
+                        <Route path="/login" element={<PublicRoute element={<Login />} />} />
 
                         {/* Organizer Routes */}
                         <Route path="/organizer" element={<ProtectedRoute element={<OrganizerLayout />} role="organizer" />}>
@@ -101,6 +120,11 @@ const LandingPage = () => {
                             <Route path="events/event-details" element={<EventDetails />} />
                             <Route path="events/create-event" element={<CreateEvent />} />
                             <Route path="events/create-show/:eventId" element={<CreateShows />} />
+                            <Route path='subscription' element={<Subscription />} />
+                            <Route path='subscription/:planId' element={<SubscriptionPlan />} />
+                            <Route path="paypal-subscription-return" element={<PayPalSubscriptionReturn />} />
+                            <Route path='paypal-subscription-cancel' element={<PaypalSubscriptionCancel />} />
+
                         </Route>
 
                         {/* User Routes */}
@@ -115,6 +139,7 @@ const LandingPage = () => {
                             <Route path="paypal-return" element={<PaypalReturn />} />
                             <Route path="paypal-cancel" element={<PaypalCancel />} />
                             <Route path='reviews/:event_id' element={<UserEventReviews />} />
+                            <Route path='ticket-pdf' element={<BookingSuccess />} />
                         </Route>
 
                         {/* Admin Routes */}

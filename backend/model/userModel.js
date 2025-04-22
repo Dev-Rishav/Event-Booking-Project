@@ -1,9 +1,9 @@
 import pool from "../database/db.js";
 
 const User = {
-    create: async(email,name,phone,password,role, interests = []) => {
-      const query = "INSERT INTO users (email,name,phone,password,role) VALUES ($1, $2, $3,$4,$5)";
-      const result = await pool.query(query, [email,name,phone,password,role]);
+    create: async(email,name,phone,password,role, interests = [] ,is_organizer, free_events_remaining ,current_subscription_id) => {
+      const query = "INSERT INTO users (email,name,phone,password,role ,is_organizer, free_events_remaining ,current_subscription_id) VALUES ($1, $2, $3,$4,$5,$6,$7,$8)";
+      const result = await pool.query(query, [email,name,phone,password,role ,is_organizer, free_events_remaining ,current_subscription_id]);
 
       if (interests && interests.length > 0) {
         for (const category of interests) {

@@ -1,10 +1,11 @@
 import express from 'express';
 import multer from 'multer';
 import { createEvent, getEventsByOrganizer, getEventsByCategoryAndOrganizer, getEventsByCityAndOrganizer, getEventsById, getTopEventByLikes, createShow, getAllShowsOfAnEvent, getEventsByCity, getEventsByCategory, getVenueById, getAllBookingsOfAnOrganizer, getEventwiseEarningofOrganizer, getAllBookingsOfAUser, getLikedEventsByUser, likeEvent, unlikeEvent, getEventsByDateandCity, getEventsByCityAndInterest, getOngoingEventsByCity , getUpcomingEventsByCity } from "../controller/eventController.js";
-import { fetchSeats , bookSeats } from '../controller/ticketBookingController.js';
+import { fetchSeats , bookSeats, holdSeats, cancelSeatHold, generateTicketPDF } from '../controller/ticketBookingController.js';
 import { capturePayment, createBooking } from '../controller/paymentController.js';
 import { createReview, getEventReviews } from '../controller/ReviewController.js';
 import { getAllOrganizers, getAllUsers, getUserbyEmail } from '../controller/AdminController.js';
+import { captureOrganizerSubscription, createOrganizerSubscription, createSubscriptionPlan, getAllSubscriptionPlans, getSubscriptionPlanByID } from '../controller/SubscriptionController.js';
 
 const router = express.Router();
 
@@ -26,10 +27,18 @@ router.get('/eventwiseearning/:id' , getEventwiseEarningofOrganizer)
 router.get('/likedevents/:id' , getLikedEventsByUser);
 router.post('/likeevent' , likeEvent);
 router.post('/unlikeevent' , unlikeEvent);
+
+router.post('/booking/hold', holdSeats);
+router.post('/booking/cancel/hold', cancelSeatHold);
 router.post('/show/booking/confirm' , bookSeats);
+router.post('/generate-ticket', generateTicketPDF);
 
 router.post('/booking/create-payment', createBooking);
 router.post('/booking/capture-payment', capturePayment);
+
+
+router.post('/admin/organizer/create-subscription', createOrganizerSubscription);
+router.post('/admin/organizer/capture-subscription', captureOrganizerSubscription);
 
 
 
@@ -44,6 +53,10 @@ router.get('/reviews/:id', getEventReviews);
 router.get('/userinterestevents/:id' , getEventsByCityAndInterest);
 router.get('/ongoingevents' , getOngoingEventsByCity);
 router.get('/upcomingevents' , getUpcomingEventsByCity);
+
+router.post('/plan', createSubscriptionPlan);
+router.get('/get-plans' , getAllSubscriptionPlans);
+router.get('/get-plan/:id' , getSubscriptionPlanByID);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, "uploads/"), // Save files in 'uploads' folder

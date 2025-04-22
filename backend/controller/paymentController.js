@@ -5,7 +5,7 @@ import { io , connectedUsers } from '../index.js';
 
 export const createBooking = async (req, res) => {
   try {
-    const { userEmail, showId, selectedSeats, totalAmount } = req.body;
+    const { userId, showId, selectedSeats, totalAmount } = req.body;
 
     // Extract seat IDs from selectedSeats
     const seatIds = selectedSeats.map(seat => seat.seat_id);
@@ -65,7 +65,7 @@ export const createBooking = async (req, res) => {
             `INSERT INTO bookings (user_id, show_id, seat_id, transaction_id)
              VALUES ($1, $2, $3, $4)
              RETURNING booking_id`,
-            [userEmail, showId, seatId, paymentId]
+            [userId, showId, seatId, paymentId]
           );
           bookingIds.push(bookingResult.rows[0].booking_id);
         }

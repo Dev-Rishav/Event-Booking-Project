@@ -26,7 +26,8 @@ const Profile = () => {
             Authorization: `Bearer ${token}`
           }
         });
-
+        // console.log(response.data.result);
+        
         const userData = response.data.result;
         setUser(userData);
         setNewPhone(userData.phone);

@@ -17,6 +17,7 @@ const UserNavbar = () => {
   const handleLogout = () => {
     Cookies.remove("token");
     Cookies.remove("role");
+    Cookies.remove("id");
     window.location.href = "/";
   };
 

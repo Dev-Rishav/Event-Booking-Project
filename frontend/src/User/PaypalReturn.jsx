@@ -31,7 +31,7 @@ const PaypalReturn = () => {
         });
 
         alert("Payment successful!");
-        navigate("/user/bookings"); // Or wherever you want to go post payment
+        navigate("/user/ticket-pdf"); // Or wherever you want to go post payment
       } catch (err) {
         alert("Payment failed. Please contact support.");
         console.log("Capture error:", err);

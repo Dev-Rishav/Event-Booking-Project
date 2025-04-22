@@ -4,30 +4,47 @@ import User from '../model/userModel.js';
 
 export const register = async (req, res) => {
     try {
-        const { email, name, phone, password, role , interests } = req.body;
-
-        if (interests && !Array.isArray(interests)) {
-            return res.status(400).json({ error: "Interests must be an array" });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        
-        const result = await User.create(email, name, phone, hashedPassword, role , interests);
-
-       
-        res.status(201).json({ message: 'User registered successfully', user: result });
-
+      const { email, name, phone, password, role, interests } = req.body;
+  
+      if (interests && !Array.isArray(interests)) {
+        return res.status(400).json({ error: "Interests must be an array" });
+      }
+  
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+     
+      const is_organizer = role === 'organizer';
+  
+      
+      const free_events_remaining = is_organizer ? 5 : null;
+      const current_subscription_id = null;
+  
+     
+      const result = await User.create(
+        email,
+        name,
+        phone,
+        hashedPassword,
+        role,
+        interests,
+        is_organizer,
+        free_events_remaining,
+        current_subscription_id
+      );
+  
+      res.status(201).json({ message: 'User registered successfully', user: result });
+  
     } catch (error) {
-        console.error("Error in register function:", error);
-
-        if (error.code === '23505' && error.constraint === 'user_interests_user_id_category_key') {
-            return res.status(400).json({ error: "Duplicate interest category for user" });
-        }
-        
-        res.status(500).json({ error: "Internal server error" });
+      console.error("Error in register function:", error);
+  
+      if (error.code === '23505' && error.constraint === 'user_interests_user_id_category_key') {
+        return res.status(400).json({ error: "Duplicate interest category for user" });
+      }
+  
+      res.status(500).json({ error: "Internal server error" });
     }
-};
+  };
+  
 
 export const login = async (req, res) => {
     try {
@@ -56,7 +73,7 @@ export const login = async (req, res) => {
         }
 
         // Generate JWT Token
-        const token = jwt.sign({ userId: user.email  , role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        const token = jwt.sign({ userId: user.email  , role: user.role }, process.env.JWT_SECRET, { expiresIn: "6h" });
 
         res.json({ token , role: user.role  ,  userId: user.email });
 
