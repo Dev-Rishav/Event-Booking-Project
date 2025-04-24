@@ -10,7 +10,7 @@ import { Server } from 'socket.io';
 dotenv.config({});
 const app = express();
 
-const PORT = 8080;
+const PORT = 8001;
 
 // default middleware
 app.use(express.json());
@@ -57,7 +57,7 @@ app.use("/api", otherRouter);
 export { io , connectedUsers};
 
 app.get('/', (req, res) => {
-    return res.json({ msg: "hello , i am BTS" });
+    return res.json({ msg: "hello" });
 })
 
 server.listen(PORT, () => {

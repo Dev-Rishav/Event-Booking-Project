@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { FaTicketAlt } from 'react-icons/fa';
+import { FaTicketAlt , FaDownload } from 'react-icons/fa';
 
 const UserBookings = () => {
   const id = Cookies.get("id");
@@ -12,7 +12,7 @@ const UserBookings = () => {
     const fetchBookings = async () => {
       try {
         const res = await axios.get(`http://localhost:8001/api/userbookings/${id}`);
-        setBookings(res.data.result); 
+        setBookings(res.data.result);
       } catch (err) {
         console.error("Error fetching user bookings", err);
       } finally {
@@ -22,6 +22,46 @@ const UserBookings = () => {
 
     fetchBookings();
   }, []);
+
+
+  const downloadTicket = async (bookingData) => {
+    try {
+      const response = await fetch('http://localhost:8001/api/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate ticket');
+      }
+
+      // Create blob from response
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      // Create download link
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `ticket-${bookingData.booking_id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      }, 100);
+
+    } catch (error) {
+      console.error('Download error:', error);
+      toast.error('Failed to download ticket');
+    }
+  };
+
+
 
   if (loading) return <p className="text-center text-gray-600">Loading your bookings...</p>;
 
@@ -80,14 +120,20 @@ const UserBookings = () => {
 
             {/* Payment Status */}
             <span
-              className={`text-sm font-bold px-3 py-1 rounded-full ${
-                booking.payment_status === 'paid'
+              className={`text-sm font-bold px-3 py-1 rounded-full ${booking.payment_status === 'paid'
                   ? 'bg-yellow-200 text-yellow-800'
                   : 'bg-yellow-100 text-yellow-700'
-              }`}
+                }`}
             >
               {booking.payment_status.toUpperCase()}
             </span>
+            <button
+              onClick={() => downloadTicket(booking)}
+              className="flex items-center gap-2 bg-indigo-600 my-4 mx-20 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition"
+            >
+              <FaDownload /> Download Ticket
+            </button>
+
           </div>
         ))}
       </div>

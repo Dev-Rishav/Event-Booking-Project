@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useEvent } from '../EventContext/EventContext';
+import Cookies from 'js-cookie';
 
 const CreateEvent = () => {
-    const { createEvent } = useEvent();
-
+    const { createEvent  , error } = useEvent();
+    const emailId = Cookies.get('id');
+    const [message, setMessage] = useState("");
     const [eventData, setEventData] = useState({
         title: "",
         venue_id: "",
@@ -29,7 +31,7 @@ const CreateEvent = () => {
 
         try {
             await createEvent(eventData, image);
-            alert("Event created successfully!");
+            setMessage("Event created successfully!");
             setEventData({
                 title: "",
                 venue_id: "",
@@ -41,12 +43,15 @@ const CreateEvent = () => {
             });
             setImage(null);
         } catch (error) {
-            alert("Error: " + error.message);
+            setMessage("Failed to create Event.");
         }
     };
 
     return (
         <div className="max-w-lg mx-auto my-16 py-4 px-8 bg-white rounded-lg shadow-md">
+
+             {message && <p className="text-center text-green-600 mb-4">{message}</p>}
+
             <h2 className="text-xl font-bold mb-4">Create Event</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input

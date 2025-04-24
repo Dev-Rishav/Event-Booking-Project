@@ -21,6 +21,8 @@ import Revenue from '../Organizer/pages/Revenue';
 import EventDetails from '../Organizer/components/EventDetails';
 import CreateEvent from '../Organizer/components/CreateEvent';
 import CreateShows from '../Organizer/components/CreateShows';
+import Subscription from '../Organizer/pages/Subscription';
+import SubscriptionPlan from '../Organizer/pages/SubscriptionPlan';
 import PayPalSubscriptionReturn from '../Organizer/pages/PaypalSubscriptionReturn';
 import PaypalSubscriptionCancel from '../Organizer/pages/PaypalSubscriptionCancel';
 
@@ -47,9 +49,8 @@ import AdminProfile from '../Admin/AdminProfile';
 import AdminUsersDetails from '../Admin/AdminUsersDetails';
 import AdminOrganizersDetails from '../Admin/AdminOrganizersDetails';
 import UserEventReviews from '../User/ UserEventReviews';
-import BookingSuccess from '../User/BookingSuccess';
-import Subscription from '../Organizer/pages/Subscription';
-import SubscriptionPlan from '../Organizer/pages/SubscriptionPlan';
+import CreateAdminSubscription from '../Admin/CreateAdminSubscription';
+import AdminSubscriptionPlans from '../Admin/AdminSubscriptionPlans';
 
 
 // Protected Route Component
@@ -139,7 +140,6 @@ const LandingPage = () => {
                             <Route path="paypal-return" element={<PaypalReturn />} />
                             <Route path="paypal-cancel" element={<PaypalCancel />} />
                             <Route path='reviews/:event_id' element={<UserEventReviews />} />
-                            <Route path='ticket-pdf' element={<BookingSuccess />} />
                         </Route>
 
                         {/* Admin Routes */}
@@ -147,6 +147,8 @@ const LandingPage = () => {
                             <Route path="dashboard" element={<AdminHome />} />
                             <Route path='revenue' element={<AdminRevenue />} />
                             <Route path='profile' element={<AdminProfile />} />
+                            <Route path='subscription' element={<AdminSubscriptionPlans />} />
+                            <Route path='create-subscription' element={<CreateAdminSubscription />} />
                             <Route path='organizers' element={<AdminOrganizers />} />
                             <Route path='users' element={<AdminUsers />} />
                             <Route path='users/:email' element={<AdminUsersDetails />} />

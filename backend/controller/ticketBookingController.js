@@ -6,26 +6,26 @@ import fs from 'fs';
 import path from 'path';
 
 
-export const holdSeats = async (req, res) => {
-  const { show_id, seats, userId } = req.body;
+// export const holdSeats = async (req, res) => {
+//   const { show_id, seats, userId } = req.body;
 
-  try {
-    for (const seat of seats) {
-      const redisKey = `hold:${show_id}:${seat}`;
-      const existingHold = await redisClient.get(redisKey);
+//   try {
+//     for (const seat of seats) {
+//       const redisKey = `hold:${show_id}:${seat}`;
+//       const existingHold = await redisClient.get(redisKey);
 
-      if (existingHold) {
-        return res.status(409).json({ message: `Seat ${seat} is already held.` });
-      }
+//       if (existingHold) {
+//         return res.status(409).json({ message: `Seat ${seat} is already held.` });
+//       }
 
-      await redisClient.setEx(redisKey, 300, userId);
-    }
+//       await redisClient.setEx(redisKey, 300, userId);
+//     }
 
-    res.status(200).json({ message: "Seats held successfully for 5 minutes." });
-  } catch (err) {
-    res.status(500).json({ message: "Error holding seats", error: err.message });
-  }
-};
+//     res.status(200).json({ message: "Seats held successfully for 5 minutes." });
+//   } catch (err) {
+//     res.status(500).json({ message: "Error holding seats", error: err.message });
+//   }
+// };
 
 export const cancelSeatHold = async (req, res) => {
   const { showId, seatNumber, userId } = req.body;
@@ -112,67 +112,123 @@ export const fetchSeats = async(req,res) => {
   
 
 
-export const generateTicketPDF = async (req, res) => {
-  const { bookingDetails } = req.body;
-
-  if (!bookingDetails) {
-    return res.status(400).json({ message: "Booking details are required." });
-  }
-
-  const {
-    // userName,
-    userEmail,
-    // eventTitle,
-    // venue,
-    // showTime,
-    // showDate,
-    // seatNumbers,
-    ticketId,
-    // bookingTime
-  } = bookingDetails;
-
+export const generatePDFTicketFromData = async (req, res) => {
   try {
-    const doc = new PDFDocument();
+    const { 
+      booking_id,
+      event_title,
+      show_date,
+      start_time,
+      end_time,
+      username,
+      user_email,
+      seat_number,
+      seat_category,
+      price,
+      booking_time,
+      payment_status
+    } = req.body;
 
-    const pdfPath = path.resolve(`./tickets/ticket-${ticketId}.pdf`);
-    const writeStream = fs.createWriteStream(pdfPath);
-    doc.pipe(writeStream);
+    if (!booking_id || !event_title) {
+      return res.status(400).json({ error: 'Missing required booking data' });
+    }
 
-    // PDF content
-    doc.fontSize(20).text("🎟 Event Ticket", { align: "center" });
-    doc.moveDown();
+    // Create PDF
+    const doc = new PDFDocument({ size: 'A4', margin: 20 });
 
-    doc.fontSize(14).text(`Ticket ID: ${ticketId}`);
-    // doc.text(`Name: ${userName}`);
-    doc.text(`Email: ${userEmail}`);
-    // doc.text(`Event: ${eventTitle}`);
-    // doc.text(`Venue: ${venue}`);
-    // doc.text(`Date: ${showDate}`);
-    // doc.text(`Time: ${showTime}`);
-    // doc.text(`Seats: ${seatNumbers.join(', ')}`);
-    // doc.text(`Booking Time: ${bookingTime}`);
+    // Set response headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=ticket-${booking_id}.pdf`);
+    
+    // Pipe PDF to response
+    doc.pipe(res);
 
-    doc.moveDown();
-    doc.text("Please bring a valid ID along with this ticket.", { align: "center" });
+    // Add styling variables
+    const primaryColor = '#4f46e5'; // Indigo
+    const secondaryColor = '#ef4444'; // Red
 
+    // Header with ticket icon and title
+    doc.fontSize(16)
+       .fillColor(primaryColor)
+       .text('EVENT TICKET', { align: 'center' });
+    
+    doc.fontSize(24)
+       .fillColor(secondaryColor)
+       .text('🎟', { align: 'center' })
+       .moveDown(0.5);
+
+    // Event details section
+    doc.fontSize(12)
+       .fillColor('#000000')
+       .text(`Event: ${event_title}`, { paragraphGap: 5 })
+       .text(`Date: ${new Date(show_date).toLocaleDateString()}`)
+       .text(`Time: ${start_time} - ${end_time}`)
+       .moveDown(0.5);
+
+    // User details
+    doc.text(`Attendee: ${username}`)
+       .text(`Email: ${user_email}`)
+       .moveDown(0.5);
+
+    // Ticket details table
+    doc.font('Helvetica-Bold')
+       .fillColor(primaryColor)
+       .text('TICKET DETAILS', { paragraphGap: 3 })
+       .font('Helvetica')
+       .fillColor('#000000');
+
+    // Create a simple table
+    const tableTop = doc.y;
+    const col1 = 20;
+    const col2 = 100;
+
+    // Table headers
+    doc.font('Helvetica-Bold')
+       .text('Category', col1, tableTop)
+       .text('Details', col2, tableTop)
+       .font('Helvetica');
+
+    // Table rows
+    let y = tableTop + 20;
+    const rowHeight = 20;
+
+    const addRow = (label, value) => {
+      doc.text(label, col1, y)
+         .text(value, col2, y);
+      y += rowHeight;
+    };
+
+    addRow('Seat Number:', seat_number);
+    addRow('Seat Category:', seat_category);
+    addRow('Price:', `₹${price}`);
+    addRow('Status:', payment_status.toUpperCase());
+
+    // Footer
+    doc.moveDown(1)
+       .fontSize(8)
+       .fillColor('#666666')
+       .text(`Booking ID: ${booking_id}`, { paragraphGap: 2 })
+       .text(`Issued on: ${new Date().toLocaleString()}`)
+       .moveDown(0.5)
+       .fontSize(10)
+       .fillColor(primaryColor)
+       .text('Thank you for your booking!', { align: 'center' });
+
+    // Add security features
+    doc.opacity(0.1)
+       .fillColor('#000000')
+       .fontSize(60)
+       .text('VALID', { align: 'center', rotation: 30 })
+       .opacity(1);
+
+    // Finalize PDF
     doc.end();
 
-    writeStream.on('finish', () => {
-      res.download(pdfPath, `ticket-${ticketId}.pdf`, (err) => {
-        if (err) {
-          console.error("Error sending PDF:", err);
-          res.status(500).json({ message: "Error generating ticket." });
-        } else {
-          // Optional: Clean up PDF file after sending
-          fs.unlink(pdfPath, (unlinkErr) => {
-            if (unlinkErr) console.error("Error deleting PDF:", unlinkErr);
-          });
-        }
-      });
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    res.status(500).json({ 
+      error: 'Failed to generate ticket',
+      details: error.message 
     });
-
-  } catch (err) {
-    console.error("PDF generation error:", err);
-    res.status(500).json({ message: "Internal Server Error" });
   }
 };

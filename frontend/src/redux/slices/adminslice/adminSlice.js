@@ -5,6 +5,7 @@ import axios from 'axios';
 const initialState = {
   users: [],
   organizers: [],
+  plans : [],
   plan : null ,
   loading: false,
   error: null,
@@ -37,6 +38,9 @@ export const adminSlice = createSlice({
     setPlan: (state, action) => {
       state.plan = action.payload;
     },
+    setPlans: (state, action) => {
+      state.plan = action.payload;
+    },
     resetSubscription: (state) => {
       state.loading = false;
       state.error = null;
@@ -46,6 +50,6 @@ export const adminSlice = createSlice({
   },
 });
 
-export const { setLoading, setUsers, setOrganizers, setError , setSuccess , resetSubscription , setApprovalUrl , setPlan } = adminSlice.actions;
+export const { setLoading, setUsers, setOrganizers, setError , setSuccess , resetSubscription , setApprovalUrl , setPlan , setPlans} = adminSlice.actions;
 
 export default adminSlice.reducer;

@@ -20,9 +20,12 @@ const SubscriptionPlan = () => {
 
     useEffect(() => {
         const fetchPlan = async () => {
+            
+            
             dispatch(fetchSubscriptionPlan(planId));
         };
         fetchPlan();
+        // console.log(plan.price);
     }, [dispatch, planId]);
 
     useEffect(() => {
@@ -37,13 +40,14 @@ const SubscriptionPlan = () => {
         const start_date = new Date();
         const end_date = new Date(start_date);
         end_date.setDate(end_date.getDate() + plan.duration_days);
+        const parsedPrice = parseFloat(plan.price);
 
         try {
             setIsSubscribing(true);
             dispatch(resetSubscription());
             dispatch(createOrganizerSubscription({
-                email,
-                price: plan.price,
+                email: email,
+                price: parsedPrice,
                 plan_id: plan.plan_id,
                 // start_date: start_date.toISOString().split('T')[0],
                 // end_date: end_date.toISOString().split('T')[0]

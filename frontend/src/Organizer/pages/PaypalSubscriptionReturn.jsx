@@ -14,7 +14,7 @@ const PayPalSubscriptionReturn = () => {
   const PayerID = searchParams.get('PayerID');
   const email = Cookies.get("id");
 
-  const { loading, error, success } = useSelector((state) => state.subscription);
+  const { loading, error, success } = useSelector((state) => state.admin);
 
   useEffect(() => {
     if (paymentId && PayerID && email) {

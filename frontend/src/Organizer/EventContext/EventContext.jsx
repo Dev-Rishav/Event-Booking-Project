@@ -72,8 +72,13 @@ const EventProvider = ({children}) => {
         try {
            const response =  await axios.post(URL , event);
            setEvents((prev) => [...prev , response.data]);
-        } catch (error) {
+        } catch (err) {
             setError(error.message);
+            // if (err.response && err.response.data && err.response.data.error) {
+            //     throw new Error(err.response.data.error);
+            // } else {
+            //     throw new Error("Failed to create event. Please try again.");
+            // }
         }
     }
 

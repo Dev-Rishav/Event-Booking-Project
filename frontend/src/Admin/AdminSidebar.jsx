@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
-import { FaHome, FaMoneyBill, FaFilm, FaClipboardList, FaStar, FaBell, FaUser, FaBars } from "react-icons/fa";
+import { FaHome, FaMoneyBill, FaFilm, FaClipboardList, FaStar, FaBell, FaUser, FaBars , FaCrown } from "react-icons/fa";
 
 const AdminSidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
@@ -19,6 +19,7 @@ const AdminSidebar = () => {
   const menuItems = [
     { name: "Home", path: "/admin/dashboard", icon: <FaHome /> },
     { name: "Revenue", path: "/admin/revenue", icon: <FaMoneyBill /> },
+    { name: "Subscriptions", path: "/admin/subscription", icon: <FaCrown /> },
     { name: "Users", path: "/admin/users", icon: <FaFilm /> },
     { name: "Oraganizers", path: "/admin/organizers", icon: <FaClipboardList /> },
     { name: "Profile", path: "/admin/profile", icon: <FaUser /> },

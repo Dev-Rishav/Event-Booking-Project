@@ -1,5 +1,5 @@
 // src/redux/adminActions.js or same file
-import { setLoading, setUsers, setOrganizers, setError, setApprovalUrl, setSuccess , setPlan } from './adminSlice';
+import { setLoading, setUsers, setOrganizers, setError, setApprovalUrl, setSuccess , setPlan , setPlans } from './adminSlice';
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:8001/api/admin';
@@ -41,6 +41,7 @@ export const createOrganizerSubscription = (email, price, plan_id, start_date, e
 
     if (response.data.success && response.data.approvalURL) {
       dispatch(setApprovalUrl(response.data.approvalURL));
+      
     } else {
       throw new Error("Payment initiation failed.");
     }
@@ -49,6 +50,8 @@ export const createOrganizerSubscription = (email, price, plan_id, start_date, e
   }
   dispatch(setLoading(false));
 };
+
+
 
 export const captureOrganizerSubscription = (paymentId, PayerID, email) => async (dispatch) => {
   dispatch(setLoading(true));
@@ -66,10 +69,12 @@ export const captureOrganizerSubscription = (paymentId, PayerID, email) => async
   dispatch(setLoading(false));
 };
 
+
+
 export const fetchSubscriptionPlan = (plan_id) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const res = await axios.get(`http://localhost:8001/api/get-plan/${plan_id}`);
+    const res = await axios.get(`${BASE_URL}/get-plan/${plan_id}`);
     localStorage.setItem('plan', JSON.stringify(res.data.result));
     dispatch(setPlan(res.data.result));
     dispatch(setLoading(false));
@@ -78,3 +83,27 @@ export const fetchSubscriptionPlan = (plan_id) => async (dispatch) => {
     dispatch(setError(err.response?.data?.error || 'Failed to fetch plan'));
   }
 };
+
+export const fetchAllSubscriptionPlans = () => async (dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const res = await axios.get(`${BASE_URL}/get-plans`);
+    localStorage.setItem('Allplans', JSON.stringify(res.data.result));
+    // console.log(res.data.result);
+    dispatch(setPlans(res.data.result));
+    dispatch(setLoading(false));
+    dispatch(setError(null));
+  } catch (err) {
+    dispatch(setError(err.response?.data?.error || 'Failed to fetch plan'));
+  }
+};
+
+
+export const createSubscriptionPlan = (formData) => async(dispatch) => {
+  dispatch(setLoading(true));
+  try {
+    const response = await axios.post(`${BASE_URL}/plan` , formData );
+  } catch (error) {
+    dispatch(setError(err.response?.data?.error || 'Failed to create plan'));
+  }
+}

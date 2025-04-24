@@ -2,6 +2,7 @@ import Event from '../model/eventModel.js';
 import pool from '../database/db.js';
 import { io } from '../index.js';
 import redisClient from '../database/Redis.js';
+import { Result } from 'express-validator';
 
 
 export const getEventsByOrganizer = async (req, res) => {
@@ -23,8 +24,9 @@ export const createEvent = async (req, res) => {
 
     try {
         const organizer = await pool.query('SELECT free_events_remaining, current_subscription_id FROM users WHERE email = $1', [organizer_id]);
-
-        if (organizer.free_events_remaining > 0) {
+        // console.log(organizer.rows[0].free_events_remaining);
+        
+        if (organizer.rows[0].free_events_remaining > 0) {
             await pool.query('UPDATE users SET free_events_remaining = free_events_remaining - 1 WHERE email = $1', [organizer_id]);
 
             const image = req.file ? `/uploads/${req.file.filename}` : null;
@@ -79,7 +81,7 @@ export const createEvent = async (req, res) => {
                 }
               }
             }
-            throw new Error('No available event slots. Please upgrade your subscription.');
+            return res.status(400).json({ error: "No available event slots. Please upgrade your subscription." });   
     } catch (error) {
         console.error("Error creating event:", error); 
         res.status(500).json({ error: "Internal server error" });
