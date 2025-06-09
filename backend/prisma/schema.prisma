@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model bookings {
+  booking_id     Int       @id @default(autoincrement())
+  transaction_id String?   @db.VarChar(255)
+  user_id        String?   @db.VarChar(255)
+  show_id        Int?
+  seat_id        Int?
+  payment_status String?   @default("pending") @db.VarChar(20)
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+  seats          seats?    @relation(fields: [seat_id], references: [seat_id], onDelete: NoAction, onUpdate: NoAction)
+  shows          shows?    @relation(fields: [show_id], references: [show_id], onDelete: NoAction, onUpdate: NoAction)
+  payment        payment?  @relation(fields: [transaction_id], references: [transaction_id], onDelete: NoAction, onUpdate: NoAction)
+  users          users?    @relation(fields: [user_id], references: [email], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model events {
+  event_id     Int           @id @default(autoincrement())
+  title        String?       @db.VarChar(255)
+  description  String?
+  category     String?       @db.VarChar(50)
+  organizer_id String?       @db.VarChar(255)
+  image        String?       @db.VarChar(255)
+  likes_count  Int?          @default(0)
+  status       String?       @default("ongoing") @db.VarChar(20)
+  created_at   DateTime?     @default(now()) @db.Timestamp(6)
+  start_date   DateTime?     @db.Timestamp(6)
+  end_date     DateTime?     @db.Timestamp(6)
+  venue_id     Int?
+  seating_plan String?       @db.VarChar
+  users        users?        @relation(fields: [organizer_id], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  venues       venues?       @relation(fields: [venue_id], references: [venue_id], onDelete: NoAction, onUpdate: NoAction)
+  likedevents  likedevents[]
+  reviews      reviews[]
+  shows        shows[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model likedevents {
+  user_id  String @db.VarChar(255)
+  event_id Int
+  events   events? @relation(fields: [event_id], references: [event_id], onDelete: NoAction, onUpdate: NoAction)
+  users    users?  @relation(fields: [user_id], references: [email], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([user_id, event_id], map: "unique_like")
+}
+
+model organizer_subscriptions {
+  subscription_id                                              Int                 @id @default(autoincrement())
+  organizer_email                                              String?             @db.VarChar(255)
+  plan_id                                                      Int?
+  start_date                                                   DateTime            @db.Timestamp(6)
+  end_date                                                     DateTime            @db.Timestamp(6)
+  payment_status                                               String?             @default("pending") @db.VarChar(20)
+  transaction_id                                               String?             @db.VarChar(255)
+  created_at                                                   DateTime?           @default(now()) @db.Timestamp(6)
+  users_organizer_subscriptions_organizer_emailTousers         users?              @relation("organizer_subscriptions_organizer_emailTousers", fields: [organizer_email], references: [email], onDelete: NoAction, onUpdate: NoAction)
+  subscription_plans                                           subscription_plans? @relation(fields: [plan_id], references: [plan_id], onDelete: NoAction, onUpdate: NoAction)
+  users_users_current_subscription_idToorganizer_subscriptions users[]             @relation("users_current_subscription_idToorganizer_subscriptions")
+}
+
+model payment {
+  transaction_id String     @id @db.VarChar(255)
+  amount         Float?
+  status         String?    @default("pending") @db.VarChar(20)
+  created_at     DateTime?  @default(now()) @db.Timestamp(6)
+  bookings       bookings[]
+}
+
+model reviews {
+  review_id   Int       @id @default(autoincrement())
+  user_id     String?   @db.VarChar(255)
+  event_id    Int?
+  review_date DateTime? @default(now()) @db.Timestamp(6)
+  review_text String?   @db.VarChar(255)
+  events      events?   @relation(fields: [event_id], references: [event_id], onDelete: NoAction, onUpdate: NoAction)
+  users       users?    @relation(fields: [user_id], references: [email], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model seating_plans {
+  plan_id    Int       @id @default(autoincrement())
+  plan_name  String    @db.VarChar(50)
+  layout     Json
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+}
+
+model seats {
+  seat_number   String     @db.VarChar(20)
+  show_id       Int?
+  seat_category String?    @db.VarChar(100)
+  price         Float?
+  status        String?    @default("available") @db.VarChar(20)
+  seat_id       Int        @id @default(autoincrement())
+  bookings      bookings[]
+  shows         shows?     @relation(fields: [show_id], references: [show_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model shows {
+  show_id     Int        @id @default(autoincrement())
+  event_id    Int?
+  venue_id    Int?
+  start_time  String?    @db.VarChar(100)
+  end_time    String?    @db.VarChar(100)
+  total_seats Int?
+  show_date   DateTime?  @db.Date
+  bookings    bookings[]
+  seats       seats[]
+  events      events?    @relation(fields: [event_id], references: [event_id], onDelete: NoAction, onUpdate: NoAction)
+  venues      venues?    @relation(fields: [venue_id], references: [venue_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model subscription_plans {
+  plan_id                 Int                       @id @default(autoincrement())
+  plan_name               String                    @db.VarChar(100)
+  description             String?
+  max_events              Int
+  price                   Decimal                   @db.Decimal(10, 2)
+  duration_days           Int
+  is_active               Boolean?                  @default(true)
+  created_at              DateTime?                 @default(now()) @db.Timestamp(6)
+  organizer_subscriptions organizer_subscriptions[]
+}
+
+model user_interests {
+  interest_id Int     @id @default(autoincrement())
+  user_id     String? @db.VarChar
+  category    String? @db.VarChar(50)
+  users       users?  @relation(fields: [user_id], references: [email], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([user_id, category])
+}
+
+model users {
+  name                                                                           String?                   @db.VarChar(100)
+  email                                                                          String                    @id @db.VarChar(255)
+  password                                                                       String?
+  role                                                                           String?
+  phone                                                                          String?                   @db.VarChar(15)
+  is_organizer                                                                   Boolean?                  @default(false)
+  free_events_remaining                                                          Int?                      @default(5)
+  current_subscription_id                                                        Int?
+  bookings                                                                       bookings[]
+  events                                                                         events[]
+  likedevents                                                                    likedevents[]
+  organizer_subscriptions_organizer_subscriptions_organizer_emailTousers         organizer_subscriptions[] @relation("organizer_subscriptions_organizer_emailTousers")
+  reviews                                                                        reviews[]
+  user_interests                                                                 user_interests[]
+  organizer_subscriptions_users_current_subscription_idToorganizer_subscriptions organizer_subscriptions?  @relation("users_current_subscription_idToorganizer_subscriptions", fields: [current_subscription_id], references: [subscription_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model venues {
+  venue_id Int      @id @default(autoincrement())
+  name     String?  @db.VarChar(255)
+  address  String?
+  city     String?  @db.VarChar(100)
+  events   events[]
+  shows    shows[]
+}
