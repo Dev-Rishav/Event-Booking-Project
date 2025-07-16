@@ -70,15 +70,12 @@ const EventProvider = ({children}) => {
 
     const createEvent = async(event) => {
         try {
-           const response =  await axios.post(URL , event);
+            const response = await axios.post(URL, event, {
+                headers: { "Content-Type": "multipart/form-data" },
+            });
            setEvents((prev) => [...prev , response.data]);
-        } catch (err) {
+        } catch (error) {
             setError(error.message);
-            // if (err.response && err.response.data && err.response.data.error) {
-            //     throw new Error(err.response.data.error);
-            // } else {
-            //     throw new Error("Failed to create event. Please try again.");
-            // }
         }
     }
 

@@ -155,6 +155,7 @@ const UserProvider = ({ children }) => {
         try {
             const response = await axios.get(`http://localhost:8001/api/userinterestevents/${userId}?city=${city}`);
             setRecommenededEvents(response.data.result);
+            console.log("Recommended Events:", response.data.result);
             setError(null);
         } catch (error) {
             setError(error.message);
@@ -245,6 +246,18 @@ const UserProvider = ({ children }) => {
         }
     };
 
+    const fetchShowsofAnEventByCity = async (event_id, venue_name) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`http://localhost:8001/api/shows/city/${event_id}/${venue_name}`);
+            setUserShows(response.data.result);
+            setError(null);
+        } catch (error) {   
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
     const downloadTicket = async (bookingDetails) => {
@@ -290,6 +303,7 @@ const UserProvider = ({ children }) => {
                 removeNotification,
                 selectUserShow,
                 setSelectedUserShow,
+                fetchShowsofAnEventByCity,
                 setUserEvents,
                 setCity,
                 setSelectedSeats,

@@ -43,6 +43,7 @@ const UserEvents = () => {
     }, [city]);
 
     const handleSearch = () => {
+        localStorage.setItem("city", inputCity);
         setCity(inputCity);
         setInputCity("");
     };

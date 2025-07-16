@@ -1,5 +1,4 @@
-
-import React, { useEffect , useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useEvent } from "../EventContext/EventContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -10,11 +9,12 @@ const EventDetails = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8001/api/reviews/${selectedEvent.event_id}`);
+      const response = await axios.get(
+        `http://localhost:8001/api/reviews/${selectedEvent.event_id}`
+      );
       setReviews(response.data.reviews || []);
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -23,7 +23,6 @@ const EventDetails = () => {
     }
   };
 
-  // Load selectedEvent from localStorage if it's null
   useEffect(() => {
     if (!selectedEvent) {
       const savedEvent = localStorage.getItem("selectedEvent");
@@ -35,81 +34,98 @@ const EventDetails = () => {
 
   useEffect(() => {
     if (selectedEvent) {
-      fetchShows(selectedEvent.event_id); // Fetch shows dynamically for the selected event
+      fetchShows(selectedEvent.event_id);
+      fetchReviews();
     }
-    fetchReviews();
   }, [selectedEvent]);
 
-  // Store selectedEvent in localStorage whenever it changes
   useEffect(() => {
     if (selectedEvent) {
       localStorage.setItem("selectedEvent", JSON.stringify(selectedEvent));
     }
   }, [selectedEvent]);
 
-  if (!selectedEvent) return <p className="text-center text-red-500">No event selected</p>;
+  if (!selectedEvent)
+    return <p className="text-center text-red-500">No event selected</p>;
 
   return (
-    <div className="p-4 my-12">
-      <h2 className="text-2xl font-bold mb-4">{selectedEvent.title}</h2>
-      <p><strong>Category:</strong> {selectedEvent.category}</p>
-      <p><strong>Duration:</strong> {selectedEvent.duration} minutes</p>
-      <p><strong>Date:</strong> {new Date(selectedEvent.date).toLocaleDateString()}</p>
-      <p><strong>Description:</strong> {selectedEvent.description}</p>
+    <div className="p-6 my-12 max-w-5xl mx-auto">
+      <div className="bg-[#F1EFEC] p-6 rounded-xl shadow border border-[#D4C9BE] mb-8">
+        <h2 className="text-3xl font-bold text-[#123458] mb-4">
+          {selectedEvent.title}
+        </h2>
+        <div className="space-y-2 text-[#030303]">
+          <p>
+            <span className="font-semibold">Category:</span> {selectedEvent.category}
+          </p>
+          <p>
+            <span className="font-semibold">Duration:</span> {selectedEvent.duration} minutes
+          </p>
+          <p>
+            <span className="font-semibold">Date:</span>{" "}
+            {new Date(selectedEvent.date).toLocaleDateString()}
+          </p>
+          <p>
+            <span className="font-semibold">Description:</span>{" "}
+            {selectedEvent.description}
+          </p>
+        </div>
 
-      <div className="flex gap-4 mt-4">
-  <button
-    onClick={() => navigate(-1)}
-    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
-  >
-    Back
-  </button>
+        <div className="flex gap-4 mt-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="bg-[#D4C9BE] text-[#030303] px-4 py-2 rounded-lg hover:bg-[#c2b6ab] transition"
+          >
+            Back
+          </button>
+          <button
+            onClick={() =>
+              navigate(`/organizer/events/create-show/${selectedEvent.event_id}`)
+            }
+            className="bg-[#123458] text-white px-4 py-2 rounded-lg hover:bg-[#0f2e4a] transition"
+          >
+            Create New Show
+          </button>
+        </div>
+      </div>
 
-  <button
-    onClick={() => navigate(`/organizer/events/create-show/${selectedEvent.event_id}`)}
-    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-  >
-    Create New Show
-  </button>
-</div>
+      <div className="bg-[#F1EFEC] rounded-xl shadow p-6 border border-[#D4C9BE] mb-10">
+        <h2 className="text-2xl font-bold text-[#123458] mb-4">Show List</h2>
 
-
-      <div className="p-4">
-        <h2 className="text-2xl font-bold mb-4">Show List</h2>
-
-        <table className="w-full border-collapse border border-gray-300 mt-4">
+        <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 p-2">Venue</th>
-              <th className="border border-gray-300 p-2">Total Seats</th>
-              <th className="border border-gray-300 p-2">Date</th>
-              <th className="border border-gray-300 p-2">Starts at</th>
-              <th className="border border-gray-300 p-2">Ends at</th>
+            <tr className="bg-[#D4C9BE] text-[#030303]">
+              <th className="p-3 border border-[#D4C9BE]">City</th>
+              <th className="p-3 border border-[#D4C9BE]">Total Seats</th>
+              <th className="p-3 border border-[#D4C9BE]">Date</th>
+              <th className="p-3 border border-[#D4C9BE]">Starts At</th>
+              <th className="p-3 border border-[#D4C9BE]">Ends At</th>
             </tr>
           </thead>
           <tbody>
             {shows.length > 0 ? (
               shows.map((show, index) => (
                 <tr key={show._id || index} className="text-center">
-                  <td className="border border-gray-300 p-2">{show.venue_id}</td>
-                  <td className="border border-gray-300 p-2">{show.total_seats}</td>
-                  <td className="border border-gray-300 p-2">{show.show_date}</td>
-                  <td className="border border-gray-300 p-2">{show.start_time}</td>
-                  <td className="border border-gray-300 p-2">{show.end_time}</td>
+                  <td className="p-3 border border-[#D4C9BE]">{show.venue_name}</td>
+                  <td className="p-3 border border-[#D4C9BE]">{show.total_seats}</td>
+                  <td className="p-3 border border-[#D4C9BE]">{show.show_date}</td>
+                  <td className="p-3 border border-[#D4C9BE]">{show.start_time}</td>
+                  <td className="p-3 border border-[#D4C9BE]">{show.end_time}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="text-center py-4">
-                  No shows created
+                <td colSpan="5" className="text-center p-4 text-gray-600">
+                  No shows created.
                 </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
-      <div className="bg-white rounded-xl shadow p-6 my-8">
-        <h3 className="text-xl font-bold text-gray-700 mb-4">All Reviews</h3>
+
+      <div className="bg-[#F1EFEC] rounded-xl shadow p-6 border border-[#D4C9BE]">
+        <h3 className="text-xl font-bold text-[#123458] mb-4">All Reviews</h3>
         {loading ? (
           <p className="text-gray-500">Loading reviews...</p>
         ) : reviews.length === 0 ? (
@@ -119,11 +135,14 @@ const EventDetails = () => {
             {reviews.map((r, index) => (
               <li
                 key={index}
-                className="border border-gray-200 rounded-lg py-3 px-4 bg-gray-50 hover:bg-gray-100 transition"
+                className="border border-[#D4C9BE] rounded-lg py-3 px-4 bg-white hover:bg-[#f7f4f0] transition"
               >
-                <p className="text-gray-800 mb-1">{r.review_text}</p>
-                <p className="text-xs text-gray-700">
-                  — {r.user_id} ,<span className="text-xs text-gray-500 mx-2">{new Date(r.review_date).toLocaleString()}</span>
+                <p className="text-[#030303] mb-1">{r.review_text}</p>
+                <p className="text-sm text-gray-600">
+                  — {r.user_id},{" "}
+                  <span className="ml-1 text-xs text-gray-500">
+                    {new Date(r.review_date).toLocaleString()}
+                  </span>
                 </p>
               </li>
             ))}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch , useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { fetchAllSubscriptionPlans } from '../redux/slices/adminslice/adminActions';
@@ -9,9 +9,9 @@ import { fetchAllSubscriptionPlans } from '../redux/slices/adminslice/adminActio
 const AdminSubscriptionPlans = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const plans = JSON.parse(localStorage.getItem("Allplans"));
     const [isLoading, setIsLoading] = useState(true);
-
+    const plans = JSON.parse(localStorage.getItem("Allplans"));
+    
     useEffect(() => {
         fetchPlans();
         togglePlanStatus();
@@ -45,6 +45,7 @@ const AdminSubscriptionPlans = () => {
         }
     };
 
+
     return (
         <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
             <ToastContainer position="top-center" autoClose={3000} />
@@ -66,7 +67,7 @@ const AdminSubscriptionPlans = () => {
                     <div className="flex justify-center items-center h-64">
                         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
                     </div>
-                ) : plans.length === 0 ? (
+                ) : !plans || plans.length === 0 ? (
                     <div className="text-center py-12 bg-white rounded-lg shadow border border-gray-200">
                         <svg
                             className="mx-auto h-12 w-12 text-gray-400"
@@ -88,8 +89,8 @@ const AdminSubscriptionPlans = () => {
                         </p>
                         <div className="mt-6">
                             <button
-                                onClick={() => navigate('/plans/create')}
-                                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                                onClick={() => navigate('/admin/create-subscription')}
+                                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
                             >
                                 <svg
                                     className="-ml-1 mr-2 h-5 w-5"
@@ -111,13 +112,20 @@ const AdminSubscriptionPlans = () => {
                 ) : (
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {plans.map((plan) => (
-                            <div key={plan.plan_id} className="bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                            <div
+                                key={plan.plan_id}
+                                className="bg-white overflow-hidden shadow rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200"
+                            >
                                 <div className="px-5 py-6">
                                     <div className="flex items-start justify-between">
                                         <div>
                                             <h3 className="text-xl font-semibold text-gray-800">{plan.plan_name}</h3>
-                                            <p className={`mt-1 text-xs font-bold ${plan.is_active === true ? 'text-red-600' : 'text-gray-500'}`}>
-                                                {plan.is_active}
+                                            <p
+                                                className={`mt-1 text-xs font-bold ${
+                                                    plan.is_active ? 'text-red-600' : 'text-gray-500'
+                                                }`}
+                                            >
+                                                {plan.is_active ? 'Active' : 'Inactive'}
                                             </p>
                                         </div>
                                         <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
@@ -142,12 +150,12 @@ const AdminSubscriptionPlans = () => {
                                     <button
                                         onClick={() => togglePlanStatus(plan)}
                                         className={`px-3 py-1 rounded-md text-sm font-medium ${
-                                            plan.is_active === true
+                                            plan.is_active
                                                 ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                                                 : 'bg-red-100 text-red-800 hover:bg-red-200'
                                         } transition-colors duration-200`}
                                     >
-                                        {plan.is_active === true ? 'Deactivate' : 'Activate'}
+                                        {plan.is_active ? 'Deactivate' : 'Activate'}
                                     </button>
                                 </div>
                             </div>

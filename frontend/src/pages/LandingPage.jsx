@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 // Common Components
@@ -31,7 +31,6 @@ import UserLayout from '../components/UserLayout';
 import UserDashboard from '../User/UserDashboard';
 import UserBookings from '../User/UserBookings';
 import UserProfile from '../User/UserProfile';
-import LikedEvents from '../User/LikedEvents';
 import UserNotifications from '../User/UserNotifications';
 import ShowList from '../User/ShowList';
 import TicketBookingPage from '../User/TicketBookingPage';
@@ -84,7 +83,7 @@ const AutoRedirect = () => {
 
     if (!token) return <Navigate to="/" replace />;
 
-    if (role === 'organizer') return <Navigate to="/organizer/home" replace />;
+    if (role === 'organizer') return <Navigate to="/organizer/revenue" replace />;
     if (role === 'user') return <Navigate to="/user/dashboard" replace />;
     if (role === 'admin') return <Navigate to="/admin/dashboard" replace />; // in case you add admin routes
 
@@ -134,7 +133,6 @@ const LandingPage = () => {
                             <Route path="profile" element={<UserProfile />} />
                             <Route path="bookings" element={<UserBookings />} />
                             <Route path="notifications" element={<UserNotifications />} />
-                            <Route path="likedevents" element={<LikedEvents />} />
                             <Route path="showlist" element={<ShowList />} />
                             <Route path="ticket-booking/:show_id" element={<TicketBookingPage />} />
                             <Route path="paypal-return" element={<PaypalReturn />} />

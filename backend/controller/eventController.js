@@ -19,8 +19,12 @@ export const getEventsByOrganizer = async (req, res) => {
 }
 
 export const createEvent = async (req, res) => {
-    // console.log(req.body);
-    const { title, description, category, organizer_id, start_date, end_date, venue_id } = req.body;
+    console.log(req.file);
+    console.log(req.body);
+    const { title, description, category, organizer_id, start_date, end_date } = req.body;
+    if (!title || !description || !category || !organizer_id || !start_date || !end_date) {
+        return res.status(400).json({ error: "All fields are required" });
+    }
 
     try {
         const organizer = await pool.query('SELECT free_events_remaining, current_subscription_id FROM users WHERE email = $1', [organizer_id]);
@@ -29,13 +33,10 @@ export const createEvent = async (req, res) => {
         if (organizer.rows[0].free_events_remaining > 0) {
             await pool.query('UPDATE users SET free_events_remaining = free_events_remaining - 1 WHERE email = $1', [organizer_id]);
 
-            const image = req.file ? `/uploads/${req.file.filename}` : null;
+            const image = req.file ? req.file.path : null;
 
-            if (!title || !description || !category || !organizer_id || !start_date || !end_date || !venue_id) {
-                return res.status(400).json({ error: "All fields are required" });
-            }
 
-            const result = await Event.createEvent({ title, description, category, organizer_id, image, start_date, end_date, venue_id });
+            const result = await Event.createEvent({ title, description, category, organizer_id, image, start_date, end_date});
             io.emit('new-event', {
                 message: `A new event ${title} has been created!`,
                 event: {
@@ -47,13 +48,13 @@ export const createEvent = async (req, res) => {
         }
 
          // Check if organizer has active subscription
-        if (organizer.current_subscription_id) {
+        if (organizer.rows[0].current_subscription_id) {
             const subscription = await pool.query(
               `SELECT s.*, p.max_events 
                FROM organizer_subscriptions s
                JOIN subscription_plans p ON s.plan_id = p.plan_id
                WHERE s.subscription_id = $1 AND s.end_date > NOW() AND s.payment_status = 'completed'`,
-              [organizer.current_subscription_id]
+              [organizer.rows[0].current_subscription_id]
             );
 
             if (subscription) {
@@ -63,13 +64,14 @@ export const createEvent = async (req, res) => {
                 );
                 
                 if (eventsCount < subscription.max_events) {
-                    const image = req.file ? `/uploads/${req.file.filename}` : null;
+                    const image = req.file ? req.file.path : null;
 
-                    if (!title || !description || !category || !organizer_id || !start_date || !end_date || !venue_id) {
+
+                    if (!title || !description || !category || !organizer_id || !start_date || !end_date) {
                         return res.status(400).json({ error: "All fields are required" });
                     }
         
-                    const result = await Event.createEvent({ title, description, category, organizer_id, image, start_date, end_date, venue_id });
+                    const result = await Event.createEvent({ title, description, category, organizer_id, image, start_date, end_date});
                     io.emit('new-event', {
                         message: `A new event ${title} has been created!`,
                         event: {
@@ -93,7 +95,7 @@ export const createShow = async (req, res) => {
     try {
         const {
             event_id,
-            venue_id,
+            venue_name,
             start_time,
             end_time,
             show_date,
@@ -102,7 +104,7 @@ export const createShow = async (req, res) => {
 
         const result = await Event.createShowAndSeats({
             event_id,
-            venue_id,
+            venue_name,
             start_time,
             end_time,
             show_date,
@@ -426,5 +428,24 @@ export const getUpcomingEventsByCity = async (req, res) => {
     } catch (err) {
         console.error("Error fetching ongoing events:", err);
         res.status(500).json({ error: "Internal server error." });
+    }
+}
+
+export const getShowsOfAnEventByCity = async (req, res) => {
+    const { event_id, venue_name } = req.params;
+
+    if (!event_id || !venue_name) {
+        return res.status(400).json({ error: "Event ID and venue name are required." });
+    }
+
+    try {
+        const result = await Event.getShowsOfAnEventByCity(event_id, venue_name);
+        if (!result) {
+            return res.status(404).json({ error: "No shows found for the specified event and venue." });
+        }
+        return res.status(200).json({ msg: "Shows fetched successfully", result });
+    } catch (error) {
+        console.error("Error fetching shows:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 }

@@ -25,7 +25,6 @@ const UserNavbar = () => {
     { name: "Dashboard", path: "/user/dashboard", icon: <FaHome className="mr-2" /> },
     { name: "Profile", path: "/user/profile", icon: <FaUser className="mr-2" /> },
     { name: "Bookings", path: "/user/bookings", icon: <FaClipboardList className="mr-2" /> },
-    { name: "Liked Events", path: "/user/likedevents", icon: <FaStar className="mr-2" /> },
   ];
 
   return (

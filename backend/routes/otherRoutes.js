@@ -1,6 +1,7 @@
 import express from 'express';
-import multer from 'multer';
-import { createEvent, getEventsByOrganizer, getEventsByCategoryAndOrganizer, getEventsByCityAndOrganizer, getEventsById, getTopEventByLikes, createShow, getAllShowsOfAnEvent, getEventsByCity, getEventsByCategory, getVenueById, getAllBookingsOfAnOrganizer, getEventwiseEarningofOrganizer, getAllBookingsOfAUser, getLikedEventsByUser, likeEvent, unlikeEvent, getEventsByDateandCity, getEventsByCityAndInterest, getOngoingEventsByCity , getUpcomingEventsByCity } from "../controller/eventController.js";
+import upload from '../middleware/upload.js';
+
+import { createEvent, getEventsByOrganizer, getEventsByCategoryAndOrganizer, getEventsByCityAndOrganizer, getEventsById, getTopEventByLikes, createShow, getAllShowsOfAnEvent, getEventsByCity, getEventsByCategory, getVenueById, getAllBookingsOfAnOrganizer, getEventwiseEarningofOrganizer, getAllBookingsOfAUser, getLikedEventsByUser, likeEvent, unlikeEvent, getEventsByDateandCity, getEventsByCityAndInterest, getOngoingEventsByCity , getUpcomingEventsByCity, getShowsOfAnEventByCity } from "../controller/eventController.js";
 import { fetchSeats , bookSeats, cancelSeatHold, generatePDFTicketFromData } from '../controller/ticketBookingController.js';
 import { capturePayment, createBooking, holdSeats } from '../controller/paymentController.js';
 import { createReview, getEventReviews } from '../controller/ReviewController.js';
@@ -58,6 +59,7 @@ router.get('/reviews/:id', getEventReviews);
 router.get('/userinterestevents/:id' , getEventsByCityAndInterest);
 router.get('/ongoingevents' , getOngoingEventsByCity);
 router.get('/upcomingevents' , getUpcomingEventsByCity);
+router.get('/shows/city/:event_id/:venue_name' , getShowsOfAnEventByCity);
 
 router.post('/admin/plan', createSubscriptionPlan);
 router.get('/admin/get-plans' , getAllSubscriptionPlans);
@@ -67,12 +69,6 @@ router.get('/admin/get-plan/:id' , getSubscriptionPlanByID);
 router.patch('/admin/inactiveplan/:id' , setStatusInactiveOfPlan);
 router.patch('/admin/activeplan/:id' , setStatusActiveOfPlan);
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "uploads/"), // Save files in 'uploads' folder
-    filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
-});
-
-const upload = multer({ storage });
 
 router.post("/event", upload.single("image"), createEvent);
 

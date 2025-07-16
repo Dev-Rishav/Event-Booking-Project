@@ -9,15 +9,15 @@ const Event = {
     },
 
     createEvent: async (eventData) => {
-        const { title, description, category, organizer_id, image , start_date , end_date , venue_id } = eventData;
+        const { title, description, category, organizer_id, image , start_date , end_date } = eventData;
 
         const query = `
-            INSERT INTO events (title, description, category , organizer_id, image , start_date , end_date , venue_id)
-            VALUES ($1, $2, $3, $4, $5, $6, $7 , $8 )
+            INSERT INTO events (title, description, category , organizer_id, image , start_date , end_date)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
             RETURNING *;
         `;
 
-        const values = [title, description, category, organizer_id, image , start_date , end_date , venue_id || 'active'];
+        const values = [title, description, category, organizer_id, image , start_date , end_date];
 
         const result = await pool.query(query, values);
         return result.rows[0];
@@ -43,6 +43,12 @@ const Event = {
         const result = await pool.query(query, [event_id]);
         return result.rows;
     },
+
+    getShowsOfAnEventByCity: async (event_id , venue_name) => {
+      const query = `SELECT * FROM shows WHERE event_id = $1 AND venue_name = $2`;
+      const result = await pool.query(query, [event_id, venue_name]);
+      return result.rows;
+  },
 
     getEventsByCategoryAndOrganizer: async (category, organizer_id) => {
         const query = "SELECT * FROM events WHERE category = $1 AND organizer_id = $2";
@@ -75,28 +81,36 @@ const Event = {
     },
 
     getEventsByCategory: async (city, category) => {
-        const query = `
-          SELECT e.*, v.city
-          FROM events e
-          JOIN venues v ON e.venue_id = v.venue_id
-          WHERE v.city = $1 AND e.category = $2 AND e.status = 'ongoing'
-        `;
-        const result = await pool.query(query, [city, category]);
-        return result.rows;
-      },
+      console.log(city , category);
+      
+      const query = `
+        SELECT DISTINCT e.*, v.city
+        FROM events e
+        JOIN shows s ON e.event_id = s.event_id
+        JOIN venues v ON s.venue_name = v.city
+        WHERE LOWER(v.city) = LOWER($1)
+          AND e.category = $2
+          AND e.status = 'ongoing'
+      `;
+      const result = await pool.query(query, [city, category]);
+      return result.rows;
+    },
+    
 
-      getEventsByDateandCity: async (city, event_date) => {
-        const query = `
-          SELECT e.*, v.city
-          FROM events e
-          JOIN venues v ON e.venue_id = v.venue_id
-          WHERE v.city = $1
-            AND $2::timestamp BETWEEN e.start_date AND e.end_date
-            AND e.status = 'ongoing'
-        `;
-        const result = await pool.query(query, [city, event_date]);
-        return result.rows;
-      },
+    getEventsByDateandCity: async (city, event_date) => {
+      const query = `
+        SELECT DISTINCT e.*, v.city
+        FROM events e
+        JOIN shows s ON e.event_id = s.event_id
+        JOIN venues v ON s.venue_name = v.city
+        WHERE LOWER(v.city) = LOWER($1)
+          AND $2::timestamp BETWEEN e.start_date AND e.end_date
+          AND e.status = 'ongoing'
+      `;
+      const result = await pool.query(query, [city, event_date]);
+      return result.rows;
+    },
+    
       
 
 
@@ -266,45 +280,56 @@ const Event = {
         return result.rows;
     },
 
-    getEventsByCityAndInterest : async(user_id , city) => {
-        const query = `
-        SELECT e.*
+    getEventsByCityAndInterest: async (user_id, city) => {
+      const query = `
+        SELECT DISTINCT e.*
         FROM events e
-        JOIN venues v ON e.venue_id = v.venue_id
+        JOIN shows s ON e.event_id = s.event_id
+        JOIN venues v ON s.venue_name = v.city
         JOIN user_interests ui ON e.category = ui.category
-        WHERE ui.user_id = $1 AND LOWER(v.city) = LOWER($2)
+        WHERE ui.user_id = $1
+          AND LOWER(v.city) = LOWER($2)
         ORDER BY e.start_date ASC;
       `;
-      const result = await pool.query(query , [user_id , city]);
+      const result = await pool.query(query, [user_id, city]);
       return result.rows;
     },
+    
 
-    getOngoingEventsByCity : async(city) => {
-        const query = `
-        SELECT e.*
+    getOngoingEventsByCity: async (city) => {
+      const query = `
+        SELECT DISTINCT e.*
         FROM events e
-        JOIN venues v ON e.venue_id = v.venue_id
-        WHERE e.status = 'ongoing' AND LOWER(v.city) = LOWER($1)
+        JOIN shows s ON e.event_id = s.event_id
+        JOIN venues v ON s.venue_name = v.city
+        WHERE e.status = 'ongoing'
+          AND LOWER(v.city) = LOWER($1)
         ORDER BY e.start_date ASC;
       `;
-      const result = await pool.query(query , [city]);
+      const result = await pool.query(query, [city]);
+      console.log(result.rows);
+      
       return result.rows;
     },
+    
 
-    getUpcomingEventsByCity : async(city) => {
-        const query = `
-        SELECT e.*
+    getUpcomingEventsByCity: async (city) => {
+      const query = `
+        SELECT DISTINCT e.*
         FROM events e
-        JOIN venues v ON e.venue_id = v.venue_id
-        WHERE e.status = 'upcoming' AND LOWER(v.city) = LOWER($1)
+        JOIN shows s ON e.event_id = s.event_id
+        JOIN venues v ON s.venue_name = v.city
+        WHERE e.status = 'upcoming'
+          AND LOWER(v.city) = LOWER($1)
         ORDER BY e.start_date ASC;
       `;
-      const result = await pool.query(query , [city]);
+      const result = await pool.query(query, [city]);
       return result.rows;
     },
+    
 
 
-    createShowAndSeats: async ({ event_id, venue_id, start_time, end_time, show_date, plan_name }) => {
+    createShowAndSeats: async ({ event_id, venue_name, start_time, end_time, show_date, plan_name }) => {
         try {
           await pool.query('BEGIN');
     
@@ -328,10 +353,10 @@ const Event = {
     
           // 3. Create the show
           const showRes = await pool.query(
-            `INSERT INTO shows (event_id, venue_id, start_time, end_time, total_seats, show_date)
+            `INSERT INTO shows (event_id, venue_name, start_time, end_time, total_seats, show_date)
              VALUES ($1, $2, $3, $4, $5, $6)
              RETURNING show_id`,
-            [event_id, venue_id, start_time, end_time, totalSeats, show_date]
+            [event_id, venue_name, start_time, end_time, totalSeats, show_date]
           );
     
           const show_id = showRes.rows[0].show_id;

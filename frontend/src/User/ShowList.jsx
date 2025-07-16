@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const ShowList = () => {
-  const { userShows, selectedUserEvent, setSelectedUserEvent, fetchShowsofAnEvent  , selectUserShow , selectedUserShow } = useUser();
+  const { userShows, selectedUserEvent, setSelectedUserEvent, fetchShowsofAnEvent  , selectUserShow , selectedUserShow , fetchShowsofAnEventByCity } = useUser();
   const navigate = useNavigate();
+
+  const city = localStorage.getItem("city"); // Default city if not set
 
   // Load selectedEvent from localStorage if it's null
   useEffect(() => {
@@ -19,7 +21,7 @@ const ShowList = () => {
 
   useEffect(() => {
     if (selectedUserEvent) {
-      fetchShowsofAnEvent(selectedUserEvent.event_id); // Fetch shows dynamically for the selected event
+      fetchShowsofAnEventByCity(selectedUserEvent.event_id , city); // Fetch shows dynamically for the selected event
     }
   }, [selectedUserEvent]);
 
