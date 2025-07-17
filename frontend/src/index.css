@@ -60,6 +60,7 @@ body {
   height: 300px;
 }
 
+
 /* Light mode pulse color */
 html:not(.dark) .global-pulse-layer .pulse-1 {
   @apply bg-gradient-to-br from-blue-300/30 to-blue-100/20 blur-3xl top-10 left-1/4;

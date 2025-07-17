@@ -144,13 +144,40 @@ const Home = () => {
             transition={{ duration: 0.8 }}
             className="lg:w-1/2 text-center lg:text-left"
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 font-[Poppins] leading-tight">
-              BOOKiT – {" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#81c3d7] to-[#1282a2]">
-                BOOK
-              </span>{" "}
-              Events Within Budget
-            </h1>
+           <motion.h1
+  className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 font-[Poppins] leading-tight flex flex-wrap"
+  initial="hidden"
+  animate="visible"
+  variants={{
+    visible: {
+      transition: { staggerChildren: 0.04 },
+    },
+  }}
+>
+  {"BOOKiT – BOOK Events Within Budget"
+    .split(" ")
+    .map((word, wordIndex) => (
+      <span key={wordIndex} className="inline-block mr-2">
+        {word.split("").map((char, charIndex) => (
+          <motion.span
+            key={charIndex}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+            className={`${
+              ["BOOK", "BOOKiT"].includes(word) && char !== " "
+                ? "text-transparent bg-clip-text bg-gradient-to-r from-[#81c3d7] to-[#1282a2]"
+                : ""
+            }`}
+          >
+            {char}
+          </motion.span>
+        ))}
+      </span>
+    ))}
+</motion.h1>
+
             <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 mb-8 max-w-xl mx-auto lg:mx-0">
               "Sports ho , Movies ho  , Concerts ho ya ho Stand Up  , You Just Need BOOKiT for this Weekend."
             </p>
