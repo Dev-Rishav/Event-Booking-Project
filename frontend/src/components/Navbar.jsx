@@ -19,8 +19,8 @@ const Navbar = () => {
             to="/"
             className="flex items-center font-[Poppins] text-xl font-semibold text-[#1B1C1E] dark:text-white"
           >
-            <div className="h-9 w-9 bg-white rounded-full flex items-center justify-center mr-2 shadow-sm">
-              <FaReceipt className="text-[#3EB489] text-lg" />
+            <div className="h-9 w-9  bg-gradient-to-r from-[#034078] to-[#1282a2] rounded-full flex items-center justify-center mr-2 shadow-sm">
+              <FaReceipt className="text-white text-lg" />
             </div>
             BOOKiT
             <span className="text-[#1282a2] dark:text-[#1282a2]">.com</span>

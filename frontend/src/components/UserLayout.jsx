@@ -1,13 +1,14 @@
 import { Outlet } from "react-router-dom";
 import UserNavbar from "../User/UserNavbar";
-// import OrganizerSidebar from "../Organizer/components/Sidebar";
 
 const UserLayout = () => {
   return (
-    <div className="flex h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F7FA] to-[#E4EBF5] dark:from-[#0a1128] dark:to-[#001f54]">
       <UserNavbar />
-      <div className="flex-1 p-6">
-        <Outlet /> 
+
+      {/* Content below navbar */}
+      <div className="pt-16 px-6">
+        <Outlet />
       </div>
     </div>
   );
