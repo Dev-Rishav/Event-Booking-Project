@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Cookies from 'js-cookie';
 
 // Common Components
-import Home from '../Home';
-import HeaderUser from '../components/HeaderUser';
+import Home from '../Homepage/Home';
+import Navbar from '../components/Navbar.jsx';
 import Signup from './SignUp';
 import Login from './Login';
 import Footer from '../components/Footer';
@@ -95,11 +95,11 @@ const LandingPage = () => {
     const role = Cookies.get("role");
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen overflow-x-hidden">
             <Router>
-                {!token ? <HeaderUser /> : null}
+                {!token ? <Navbar /> : null}
                 
-                <div className="p-4 flex-grow">
+                <div className="flex-grow">
                     <Routes>
                         {/* Auto Redirect after login */}
                         <Route path="/redirect" element={<AutoRedirect />} />
