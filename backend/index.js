@@ -6,6 +6,7 @@ import userRouter from "./routes/authRoutes.js";
 import otherRouter from "./routes/otherRoutes.js";
 import http from 'http';
 import { Server } from 'socket.io';
+import "../backend/controller/eventController.js";
 
 dotenv.config({});
 const app = express();

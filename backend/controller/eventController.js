@@ -3,6 +3,7 @@ import pool from '../database/db.js';
 import { io } from '../index.js';
 import redisClient from '../database/Redis.js';
 import { Result } from 'express-validator';
+import cron from "node-cron";
 
 
 export const getEventsByOrganizer = async (req, res) => {
@@ -449,3 +450,26 @@ export const getShowsOfAnEventByCity = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 }
+
+
+export const updateEventStatuses = async () => {
+    try {
+      const query = `
+        UPDATE events
+        SET status = CASE
+            WHEN NOW() < start_date THEN 'upcoming'
+            WHEN NOW() >= start_date AND NOW() <= end_date THEN 'ongoing'
+            ELSE 'completed'
+        END;
+      `;
+      await pool.query(query);
+      console.log("Event statuses updated.");
+    } catch (error) {
+      console.error("Error updating event statuses:", error);
+    }
+  };
+  
+cron.schedule('* * * * *', () => {
+    console.log("Running scheduled status update...");
+    updateEventStatuses();
+  });
