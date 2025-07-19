@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useUser } from "./UserContext/UserContext";
 import Cookies from "js-cookie";
@@ -11,13 +11,18 @@ import {
   FaChevronDown,
   FaSignOutAlt,
 } from "react-icons/fa";
-import UserNotifications from "./UserNotifications";
 
 const UserNavbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const {
+    hasNewNotification,
+    clearNotificationBadge,
+    user,
+    notifications,
+    removeNotification,
+  } = useUser();
   const [showNotifications, setShowNotifications] = useState(false);
-  const { hasNewNotification, clearNotificationBadge, user } = useUser();
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -27,9 +32,21 @@ const UserNavbar = () => {
   };
 
   const menuItems = [
-    { name: "Dashboard", path: "/user/dashboard", icon: <FaHome className="mr-2" /> },
-    { name: "Profile", path: "/user/profile", icon: <FaUser className="mr-2" /> },
-    { name: "Bookings", path: "/user/bookings", icon: <FaClipboardList className="mr-2" /> },
+    {
+      name: "Dashboard",
+      path: "/user/dashboard",
+      icon: <FaHome className="mr-2" />,
+    },
+    {
+      name: "Profile",
+      path: "/user/profile",
+      icon: <FaUser className="mr-2" />,
+    },
+    {
+      name: "Bookings",
+      path: "/user/bookings",
+      icon: <FaClipboardList className="mr-2" />,
+    },
   ];
 
   return (
@@ -49,7 +66,9 @@ const UserNavbar = () => {
                   key={index}
                   to={item.path}
                   className={({ isActive }) =>
-                    `transition-colors duration-200 flex items-center font-medium ${isActive ? "text-blue-400" : "hover:text-blue-300"}`
+                    `transition-colors duration-200 flex items-center font-medium ${
+                      isActive ? "text-blue-400" : "hover:text-blue-300"
+                    }`
                   }
                 >
                   {item.icon}
@@ -76,8 +95,32 @@ const UserNavbar = () => {
               )}
             </button>
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-72 bg-[#1e293b] rounded-lg shadow-lg py-2 z-50">
-                <UserNotifications />
+              <div className="absolute right-0 mt-2 w-72 max-h-80 overflow-y-auto bg-[#1e293b] rounded-lg shadow-lg py-2 z-50">
+                {notifications.length === 0 ? (
+                  <div className="px-4 py-2 text-gray-300">
+                    No notifications
+                  </div>
+                ) : (
+                  notifications.map((note) => (
+                    <div
+                      key={note.id}
+                      className="flex justify-between items-start px-4 py-2 border-b border-gray-600"
+                    >
+                      <div>
+                        <div className="font-semibold">{note.title}</div>
+                        <div className="text-sm text-gray-300">
+                          {note.message}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => removeNotification(note.id)}
+                        className="text-red-400 text-xs"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))
+                )}
               </div>
             )}
           </div>
@@ -108,7 +151,11 @@ const UserNavbar = () => {
                   {user?.name?.charAt(0).toUpperCase() || "U"}
                 </span>
               </div>
-              <FaChevronDown className={`text-xs transition-transform duration-200 ${showDropdown ? "rotate-180" : ""}`} />
+              <FaChevronDown
+                className={`text-xs transition-transform duration-200 ${
+                  showDropdown ? "rotate-180" : ""
+                }`}
+              />
             </button>
 
             {showDropdown && (
@@ -144,7 +191,11 @@ const UserNavbar = () => {
                   key={index}
                   to={item.path}
                   className={({ isActive }) =>
-                    `block px-3 py-2 rounded-lg text-base font-medium flex items-center ${isActive ? "bg-green-500 text-black" : "text-white hover:bg-[#334155]"}`
+                    `block px-3 py-2 rounded-lg text-base font-medium flex items-center ${
+                      isActive
+                        ? "bg-green-500 text-black"
+                        : "text-white hover:bg-[#334155]"
+                    }`
                   }
                   onClick={() => setShowMenu(false)}
                 >

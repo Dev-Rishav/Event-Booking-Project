@@ -201,7 +201,7 @@ const Home = () => {
             <div className="bg-white/20 backdrop-blur-md rounded-[30px] p-3 border border-white/20 shadow-2xl">
               <img
                 src="#"
-                alt="Udhaari preview"
+                alt="BOOKiT Preview"
                 loading="lazy"
                 className="rounded-2xl"
               />

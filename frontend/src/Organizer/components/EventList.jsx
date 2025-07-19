@@ -24,7 +24,7 @@ const EventList = () => {
   );
 
   return (
-    <div className="p-6 my-10 max-w-6xl mx-auto rounded-xl shadow-md border bg-white/80 dark:bg-[#0f172a]/60 border-gray-200 dark:border-gray-700 backdrop-blur-md">
+    <div className="p-6 my-10 mt-16 max-w-6xl mx-auto rounded-xl shadow-md border bg-white/80 dark:bg-[#0f172a]/60 border-gray-200 dark:border-gray-700 backdrop-blur-md">
       <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">
        All Event
       </h2>

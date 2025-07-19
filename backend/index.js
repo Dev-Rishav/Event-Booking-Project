@@ -34,7 +34,7 @@ const io = new Server(server, {
 const connectedUsers = new Map();
 
 io.on('connection', (socket) => {
-    // console.log('User connected:', socket.id);
+    console.log('User connected:', socket.id);
 
     // Store user ID or email for targeted notifications
     socket.on('register', (userId) => {
@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        // console.log('User disconnected:', socket.id);
+        console.log('User disconnected:', socket.id);
         for (let [userId, id] of connectedUsers.entries()) {
             if (id === socket.id) connectedUsers.delete(userId);
         }

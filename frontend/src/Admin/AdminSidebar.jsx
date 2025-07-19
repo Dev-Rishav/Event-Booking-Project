@@ -47,7 +47,7 @@ const AdminSidebar = () => {
         </div>
         <button
           onClick={handleLogout}
-          className="px-4 py-2 text-sm font-medium bg-white text-[#1282a2] hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl shadow-sm transition"
+          className="px-4 py-2 text-sm font-medium bg-white text-[#1282a2] hover:bg-gray-100 dark:hover:bg-white/90 rounded-xl shadow-sm transition"
         >
           Logout
         </button>
@@ -62,7 +62,7 @@ const AdminSidebar = () => {
         <div className="flex justify-between items-center p-4">
           {isOpen && <h1 className="text-lg font-bold">Dashboard</h1>}
           <FaBars
-            className="text-2xl cursor-pointer hover:text-red-500 transition"
+            className="text-2xl cursor-pointer hover:text-blue-500 transition"
             onClick={toggleSidebar}
           />
         </div>
@@ -75,8 +75,8 @@ const AdminSidebar = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-3 rounded-lg transition-all ${
                   isActive
-                    ? "bg-gradient-to-r from-red-500 to-red-700 text-white shadow-md"
-                    : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                    ? "bg-gradient-to-r bg-gradient-to-r from-[#034078] to-[#1282a2] text-white shadow-md"
+                    : "hover:bg-gray-300 dark:hover:bg-gray-700"
                 }`
               }
             >

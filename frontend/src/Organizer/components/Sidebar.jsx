@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useUser } from "../../User/UserContext/UserContext";
@@ -12,12 +12,29 @@ import {
   FaCrown,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
-import UserNotifications from "../../User/UserNotifications";
 
 const Sidebar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
-  const { hasNewNotification, clearNotificationBadge } = useUser();
+  const { notifications, hasNewNotification, clearNotificationBadge, removeNotification } = useUser();
+
+  const notificationRef = useRef(null);
+
+  const handleBellClick = () => {
+    setShowDropdown(!showDropdown);
+    clearNotificationBadge();
+
+    setTimeout(() => {
+      if (!showDropdown && notificationRef.current) {
+        notificationRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 200);
+  };
 
   const handleLogout = () => {
     Cookies.remove("token");
@@ -56,31 +73,20 @@ const Sidebar = () => {
         </div>
 
         <div className="flex items-center gap-4 relative">
-          <button
-            onClick={() => {
-              setShowDropdown(!showDropdown);
-              clearNotificationBadge();
-            }}
-            className="relative"
-          >
+          <button onClick={handleBellClick} className="relative">
             <FaBell className="text-xl" />
             {hasNewNotification && (
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-ping" />
             )}
           </button>
+
           <button
             onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md shadow transition"
+            className="bg-blue-00 bg-white text-[#1282a2] hover:bg-gray-100 px-4 py-2 rounded-lg shadow transition"
           >
             Logout
           </button>
         </div>
-
-        {showDropdown && (
-          <div className="absolute right-4 top-16 z-50">
-            <UserNotifications />
-          </div>
-        )}
       </div>
 
       {/* Sidebar */}
@@ -92,7 +98,7 @@ const Sidebar = () => {
         <div className="flex justify-between items-center p-4">
           {isSidebarOpen && <h2 className="text-lg font-semibold">Dashboard</h2>}
           <FaBars
-            className="text-2xl cursor-pointer hover:text-red-500 transition hidden md:block"
+            className="text-2xl cursor-pointer hover:text-blue-500 transition hidden md:block"
             onClick={toggleSidebar}
           />
         </div>
@@ -105,8 +111,8 @@ const Sidebar = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-3 rounded-lg transition-all ${
                   isActive
-                    ? "bg-gradient-to-r from-red-500 to-red-700 shadow-md"
-                    : "hover:bg-gray-800 dark:hover:bg-gray-700"
+                    ? "bg-gradient-to-r from-[#034078] to-[#1282a2] shadow-md"
+                    : "hover:bg-gray-300 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -127,6 +133,36 @@ const Sidebar = () => {
           ))}
         </ul>
       </motion.div>
+
+      {/* Notification Panel */}
+      <div
+        ref={notificationRef}
+        className={`${
+          showDropdown ? "block" : "hidden"
+        } fixed right-4 top-20 w-[300px] max-h-[300px] overflow-y-auto bg-[#1B1C1E] text-white rounded-lg shadow-lg p-4 z-50`}
+      >
+        {notifications.length === 0 ? (
+          <p className="text-center text-gray-400">No notifications</p>
+        ) : (
+          notifications.map((note) => (
+            <div
+              key={note.id}
+              className="p-2 border-b border-gray-600 flex justify-between items-start"
+            >
+              <div>
+                <p className="font-bold">{note.title}</p>
+                <p className="text-sm">{note.message}</p>
+              </div>
+              <button
+                onClick={() => removeNotification(note.id)}
+                className="text-red-400 text-xs"
+              >
+                ✕
+              </button>
+            </div>
+          ))
+        )}
+      </div>
     </>
   );
 };
