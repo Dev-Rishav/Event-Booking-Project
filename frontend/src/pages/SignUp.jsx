@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUser, FaEnvelope, FaLock, FaReceipt, FaPhone } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock, FaTicketAlt, FaPhone } from "react-icons/fa";
 
 const Signup = () => {
   const navigation = useNavigate();
@@ -16,11 +16,11 @@ const Signup = () => {
   const [error, setError] = useState("");
 
   const interestCategories = [
-    "Music",
+    "Movie",
     "Sports",
-    "Theater",
+    "Concert",
     "Stand Up",
-    "Technology",
+    "Technical",
   ];
 
   const handleChange = (e) => {
@@ -51,47 +51,55 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F5F7FA] to-[#E4EBF5] dark:from-[#121212] dark:to-[#1B1C1E] flex items-center justify-center relative font-[DM Sans] text-[#1B1C1E] dark:text-white px-4">
-      <div className="absolute w-[400px] h-[400px] bg-gradient-to-br from-[#034078]/30 to-[#1282a2]/20 rounded-full blur-3xl top-10 left-1/4 animate-pulse pointer-events-none" />
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F7FA] to-[#E4EBF5] flex items-center justify-center relative font-sans text-gray-800 px-4">
+      {/* Background elements */}
+      <div className="absolute w-[400px] h-[400px] bg-gradient-to-br from-[#f9ab8f]/30 to-[#f40752]/20 rounded-full blur-3xl top-10 left-1/4 animate-pulse pointer-events-none" />
       <div className="absolute w-[300px] h-[300px] bg-gradient-to-tr from-white/20 to-white/0 rounded-full blur-2xl bottom-10 right-10 animate-pulse pointer-events-none" />
 
       <div className="max-w-md w-full z-10">
+        {/* Logo */}
         <div className="flex justify-center mb-6 mt-8">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-r from-[#034078] to-[#1282a2] flex items-center justify-center shadow-lg hover:rotate-12 transition-transform">
-            <FaReceipt className="text-white text-3xl" />
+          <div className="w-20 h-20 rounded-lg bg-gradient-to-r from-[#f40752] to-[#f9ab8f] flex items-center justify-center shadow-lg transform rotate-12 hover:rotate-0 transition-transform">
+            <FaTicketAlt className="text-white text-3xl" />
           </div>
         </div>
 
-        <h2 className="text-center text-3xl font-bold font-[Poppins]">
+        {/* Heading */}
+        <h2 className="text-center text-3xl font-bold">
           Start your journey on{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#034078] to-[#1282a2]">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f40752] to-[#f9ab8f] font-bold">
             BOOKiT.com
           </span>
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-700 dark:text-gray-300">
+        <p className="mt-2 text-center text-sm text-gray-600">
           Already have an account?{" "}
           <Link
             to="/login"
-            className="font-medium text-[#034078] hover:text-[#1282a2] transition"
+            className="font-medium text-[#f40752] hover:text-[#f9ab8f] transition-colors"
           >
             Login
           </Link>
         </p>
 
-        <div className="mt-8 mb-8 bg-white/30 dark:bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl rounded-3xl p-8">
+        {/* Signup Form */}
+        <div className="mt-8 mb-8 bg-white/80 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl p-8">
           {error && (
-            <div className="mb-4 bg-red-100/50 dark:bg-red-500/10 border-l-4 border-[#F97316] p-4 rounded text-sm flex items-center gap-2">
-              {error}
+            <div className="mb-4 bg-red-100/50 border-l-4 border-red-500 p-4 rounded">
+              <div className="flex items-center gap-2 text-sm text-red-800">
+                {error}
+              </div>
             </div>
           )}
+          
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-1">
+              <label htmlFor="name" className="block text-sm font-medium mb-1 text-gray-700">
                 Full Name
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaUser className="text-gray-400" />
+                  <FaUser className="text-gray-500" />
                 </div>
                 <input
                   id="name"
@@ -100,19 +108,20 @@ const Signup = () => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border focus:ring-2 focus:ring-[#034078] bg-white/10 text-sm focus:outline-none"
+                  className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-sm focus:outline-none placeholder-gray-400"
                   placeholder="Your Full Name"
                 />
               </div>
             </div>
 
+            {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
+              <label htmlFor="email" className="block text-sm font-medium mb-1 text-gray-700">
                 Email Address
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="text-gray-400" />
+                  <FaEnvelope className="text-gray-500" />
                 </div>
                 <input
                   id="email"
@@ -121,19 +130,20 @@ const Signup = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border focus:ring-2 focus:ring-[#034078] bg-white/10 text-sm focus:outline-none"
+                  className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-sm focus:outline-none placeholder-gray-400"
                   placeholder="you@bookit.com"
                 />
               </div>
             </div>
 
+            {/* Phone Field */}
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium mb-1">
+              <label htmlFor="phone" className="block text-sm font-medium mb-1 text-gray-700">
                 Phone Number
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaPhone className="text-gray-400" />
+                  <FaPhone className="text-gray-500" />
                 </div>
                 <input
                   id="phone"
@@ -142,22 +152,20 @@ const Signup = () => {
                   required
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border focus:ring-2 focus:ring-[#034078] bg-white/10 text-sm focus:outline-none"
+                  className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-sm focus:outline-none placeholder-gray-400"
                   placeholder="9876543210"
                 />
               </div>
             </div>
 
+            {/* Password Field */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-1"
-              >
+              <label htmlFor="password" className="block text-sm font-medium mb-1 text-gray-700">
                 Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="text-gray-400" />
+                  <FaLock className="text-gray-500" />
                 </div>
                 <input
                   id="password"
@@ -166,14 +174,15 @@ const Signup = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border focus:ring-2 focus:ring-[#034078] bg-white/10 text-sm focus:outline-none"
+                  className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-sm focus:outline-none placeholder-gray-400"
                   placeholder="Strong Password"
                 />
               </div>
             </div>
 
+            {/* Role Selection */}
             <div>
-              <label htmlFor="role" className="block text-sm font-medium mb-1">
+              <label htmlFor="role" className="block text-sm font-medium mb-1 text-gray-700">
                 Register as
               </label>
               <select
@@ -182,7 +191,7 @@ const Signup = () => {
                 value={formData.role}
                 onChange={handleChange}
                 required
-                className="w-full px-3 py-2 rounded-xl border  focus:ring-2 focus:ring-[#034078] bg-white/10 text-sm focus:outline-none"
+                className="w-full px-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-sm focus:outline-none"
               >
                 <option value="user">User</option>
                 <option value="organizer">Event Organizer</option>
@@ -190,8 +199,9 @@ const Signup = () => {
               </select>
             </div>
 
+            {/* Interests */}
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="block text-sm font-medium mb-1 text-gray-700">
                 Interests
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -201,21 +211,20 @@ const Signup = () => {
                       type="checkbox"
                       checked={formData.interests.includes(interest)}
                       onChange={() => handleInterestChange(interest)}
-                      className="w-4 h-4 text-[#034078] rounded focus:ring-[#034078]"
+                      className="w-4 h-4 text-[#f40752] rounded focus:ring-[#f40752]"
                     />
-                    <span className="ml-2 text-sm">{interest}</span>
+                    <span className="ml-2 text-sm text-gray-700">{interest}</span>
                   </label>
                 ))}
               </div>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={formData.interests.length === 0}
-              className={`w-full py-3 px-4 rounded-xl text-white text-sm font-semibold bg-gradient-to-r from-[#034078] to-[#1282a2] hover:from-[#1282a2] hover:to-[#034078] transition duration-300 ${
-                formData.interests.length === 0
-                  ? "opacity-70 cursor-not-allowed"
-                  : ""
+              className={`w-full py-3 px-4 rounded-xl text-white text-sm font-semibold bg-gradient-to-r from-[#f40752] to-[#f9ab8f] hover:from-[#f9ab8f] hover:to-[#f40752] transition-all duration-300 hover:shadow-xl ${
+                formData.interests.length === 0 ? "opacity-70 cursor-not-allowed" : ""
               }`}
             >
               Sign Up

@@ -1,54 +1,53 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
+  FaTicketAlt,
   FaUserCircle,
   FaSignOutAlt,
   FaUsers,
-  FaReceipt,
 } from "react-icons/fa";
 
 const Navbar = () => {
   const navigate = useNavigate();
 
-
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/30 dark:bg-[#1B1C1E]/90 border-b border-white/10 dark:border-white/10 shadow-md transition-colors">
+    <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-white/30 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
+          {/* Logo - Updated with ticket icon */}
           <Link
             to="/"
-            className="flex items-center font-[Poppins] text-xl font-semibold text-[#1B1C1E] dark:text-white"
+            className="flex items-center font-[Poppins] text-xl font-semibold text-gray-800 hover:text-gray-900 transition-colors"
           >
-            <div className="h-9 w-9  bg-gradient-to-r from-[#034078] to-[#1282a2] rounded-full flex items-center justify-center mr-2 shadow-sm">
-              <FaReceipt className="text-white text-lg" />
+            <div className="h-9 w-9 bg-gradient-to-r from-[#f40752] to-[#f9ab8f] rounded-lg flex items-center justify-center mr-2 shadow-sm transform rotate-12">
+              <FaTicketAlt className="text-white text-lg" />
             </div>
-            BOOKiT
-            <span className="text-[#1282a2] dark:text-[#1282a2]">.com</span>
+            <span className="font-bold">BOOKiT</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f40752] to-[#f9ab8f] ml-1">.com</span>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center space-x-4">
-              <>
-                <Link
-                  to="/login"
-                  className="px-4 py-2 text-sm text-[#1B1C1E] dark:text-white hover:bg-white/20 dark:hover:bg-white/10 rounded-xl transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className="px-4 py-2 text-sm font-medium bg-white text-[#1282a2] hover:bg-gray-100 rounded-xl shadow-sm transition"
-                >
-                  Register
-                </Link>
-              </>
+            <>
+              <Link
+                to="/login"
+                className="px-4 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-white/50 rounded-xl transition"
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white hover:shadow-lg rounded-xl shadow-sm transition transform hover:scale-105"
+              >
+                Register
+              </Link>
+            </>
           </div>
 
           {/* Mobile Hamburger */}
           <div className="md:hidden flex items-center">
             <button
               type="button"
-              className="text-white dark:text-white focus:outline-none"
+              className="text-gray-800 focus:outline-none"
               aria-label="Menu"
               onClick={() => {
                 const menu = document.getElementById("mobile-menu");
@@ -56,7 +55,7 @@ const Navbar = () => {
               }}
             >
               <svg
-                className="h-6 w-6 text-[#3EB489] dark:text-[#A5F3A1]"
+                className="h-6 w-6 text-[#f40752]"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -75,20 +74,20 @@ const Navbar = () => {
 
       {/* Mobile Nav */}
       <div className="md:hidden hidden px-4 pb-4 pt-2 space-y-2" id="mobile-menu">
-          <>
-            <Link
-              to="/login"
-              className="block px-4 py-2 text-white bg-[#3EB489]/20 dark:bg-[#A5F3A1]/20 rounded-lg"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="block px-4 py-2 text-white bg-[#3EB489]/20 dark:bg-[#A5F3A1]/20 rounded-lg"
-            >
-              Register
-            </Link>
-          </>
+        <>
+          <Link
+            to="/login"
+            className="block px-4 py-2 text-gray-800 bg-white/70 rounded-lg hover:bg-white/90"
+          >
+            Login
+          </Link>
+          <Link
+            to="/register"
+            className="block px-4 py-2 text-white bg-gradient-to-r from-[#f40752] to-[#f9ab8f] rounded-lg hover:shadow-md"
+          >
+            Register
+          </Link>
+        </>
       </div>
     </nav>
   );

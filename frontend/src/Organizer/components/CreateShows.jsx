@@ -12,7 +12,7 @@ const CreateShows = () => {
     start_time: "",
     end_time: "",
     show_date: "",
-    plan_name: "",
+    seating_plan: "",
   });
 
   const [message, setMessage] = useState("");
@@ -37,7 +37,7 @@ const CreateShows = () => {
         start_time: "",
         end_time: "",
         show_date: "",
-        plan_name: "",
+        seating_plan: "",
       });
     } catch (error) {
       setMessage("Failed to create show.");
@@ -123,8 +123,8 @@ const CreateShows = () => {
         <div>
           <label className="block font-semibold mb-1">Seating Category</label>
           <select
-            name="plan_name"
-            value={formData.plan_name}
+            name="seating_plan"
+            value={formData.seating_plan}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
             required

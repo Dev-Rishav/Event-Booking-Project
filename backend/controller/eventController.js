@@ -100,7 +100,7 @@ export const createShow = async (req, res) => {
             start_time,
             end_time,
             show_date,
-            plan_name
+            seating_plan
         } = req.body;
 
         const result = await Event.createShowAndSeats({
@@ -109,7 +109,7 @@ export const createShow = async (req, res) => {
             start_time,
             end_time,
             show_date,
-            plan_name
+            seating_plan
         });
 
         res.status(201).json({

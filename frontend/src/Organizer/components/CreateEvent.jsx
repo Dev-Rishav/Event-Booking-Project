@@ -30,7 +30,9 @@ const CreateEvent = () => {
     e.preventDefault();
     try {
       const formData = new FormData();
-      Object.entries(eventData).forEach(([key, value]) => formData.append(key, value));
+      Object.entries(eventData).forEach(([key, value]) =>
+        formData.append(key, value)
+      );
       if (image) formData.append("image", image);
 
       await createEvent(formData);
@@ -65,7 +67,9 @@ const CreateEvent = () => {
         </p>
       )}
 
-      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6">Create Event</h2>
+      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6">
+        Create Event
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <input
@@ -88,15 +92,23 @@ const CreateEvent = () => {
           className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
         />
 
-        <input
-          type="text"
-          name="category"
-          placeholder="Category"
-          value={eventData.category}
-          onChange={handleChange}
-          required
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
-        />
+        <div>
+          <label className="block font-semibold mb-1">Seating Category</label>
+          <select
+            name="plan_name"
+            value={eventData.category}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
+            required
+          >
+            <option value="">Select Category</option>
+            <option value="Movie">Movie</option>
+            <option value="Sports">Sports</option>
+            <option value="Concerts">Concert</option>
+            <option value="Stand Up">Stand Up</option>
+            <option value="Technical">Technical</option>
+          </select>
+        </div>
 
         <div className="flex gap-4">
           <input

@@ -10,10 +10,6 @@ html, body, #root {
   width: 100%;
 }
 
-html {
-  @apply text-gray-800 dark:text-gray-200 bg-gradient-to-br from-[#F5F7FA] to-[#E4EBF5] dark:from-[#0a1128] dark:to-[#001f54];
-}
-
 body {
   @apply text-inherit bg-inherit;
 }
@@ -41,40 +37,4 @@ body {
   animation: slideInOut 5s ease-in-out;
 }
 
-/* Global pulse layers with theme condition */
-.global-pulse-layer {
-  @apply fixed inset-0 pointer-events-none z-0;
-}
 
-.global-pulse-layer div {
-  @apply absolute rounded-full animate-pulse;
-}
-
-.global-pulse-layer .pulse-1 {
-  width: 500px;
-  height: 500px;
-}
-
-.global-pulse-layer .pulse-2 {
-  width: 300px;
-  height: 300px;
-}
-
-
-/* Light mode pulse color */
-html:not(.dark) .global-pulse-layer .pulse-1 {
-  @apply bg-gradient-to-br from-blue-300/30 to-blue-100/20 blur-3xl top-10 left-1/4;
-}
-
-html:not(.dark) .global-pulse-layer .pulse-2 {
-  @apply bg-gradient-to-tr from-blue-50/20 to-white/0 blur-2xl bottom-10 right-10;
-}
-
-/* Dark mode pulse color */
-html.dark .global-pulse-layer .pulse-1 {
-  @apply bg-gradient-to-br from-[#3EB489]/30 to-[#A5F3A1]/20 blur-3xl top-10 left-1/4;
-}
-
-html.dark .global-pulse-layer .pulse-2 {
-  @apply bg-gradient-to-tr from-white/20 to-white/0 blur-2xl bottom-10 right-10;
-}

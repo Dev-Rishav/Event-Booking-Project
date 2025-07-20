@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { FaReceipt, FaEnvelope, FaLock } from "react-icons/fa";
+import { FaTicketAlt, FaEnvelope, FaLock } from "react-icons/fa";
 
 const Login = () => {
   const navigation = useNavigate();
@@ -11,7 +11,6 @@ const Login = () => {
     password: "",
   });
   const [error, setError] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,11 +26,6 @@ const Login = () => {
       Cookies.set("role", role, { expires: 1 });
       Cookies.set("id", userId, { expires: 1 });
 
-      if (rememberMe) {
-        localStorage.setItem("userEmail", formData.email);
-      } else {
-        localStorage.removeItem("userEmail");
-      }
 
       if (role === "user") {
         navigation("/user/dashboard");
@@ -41,55 +35,60 @@ const Login = () => {
         navigation("/admin/dashboard");
       }
     } catch (error) {
-      setError("Galat email ya password. Dobara try karo!");
+      setError("Invalid email or password. Please try again!");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5F7FA] to-[#E4EBF5] dark:from-[#121212] dark:to-[#1B1C1E] font-[DM Sans] text-[#1B1C1E] dark:text-white px-4 relative overflow-hidden">
-      <div className="absolute w-[400px] h-[400px] bg-gradient-to-br from-[#034078]/30 to-[#1282a2]/20 rounded-full blur-3xl top-10 left-1/4 animate-pulse pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5F7FA] to-[#E4EBF5] font-sans text-gray-800 px-4 relative overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute w-[400px] h-[400px] bg-gradient-to-br from-[#f9ab8f]/30 to-[#f40752]/20 rounded-full blur-3xl top-10 left-1/4 animate-pulse pointer-events-none" />
       <div className="absolute w-[300px] h-[300px] bg-gradient-to-tr from-white/20 to-white/0 rounded-full blur-2xl bottom-10 right-10 animate-pulse pointer-events-none" />
 
       <div className="w-full max-w-md z-10">
+        {/* Logo */}
         <div className="flex justify-center mb-6">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-r from-[#034078] to-[#1282a2] flex items-center justify-center shadow-lg hover:rotate-12 transition-transform">
-            <FaReceipt className="text-white text-3xl" />
+          <div className="w-20 h-20 rounded-lg bg-gradient-to-r from-[#f40752] to-[#f9ab8f] flex items-center justify-center shadow-lg transform rotate-12 hover:rotate-0 transition-transform">
+            <FaTicketAlt className="text-white text-3xl" />
           </div>
         </div>
 
-        <h2 className="text-center text-3xl font-bold font-[Poppins]">
+        {/* Heading */}
+        <h2 className="text-center text-3xl font-bold font-sans">
           Welcome back to{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#034078] to-[#1282a2]">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f40752] to-[#f9ab8f] font-bold">
             BOOKiT.com
           </span>
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-700 dark:text-gray-300">
-          Don’t have an account?{" "}
+        <p className="mt-2 text-center text-sm text-gray-600">
+          Don't have an account?{" "}
           <Link
             to="/signup"
-            className="font-medium text-[#034078] hover:text-[#1282a2] transition"
+            className="font-medium text-[#f40752] hover:text-[#f9ab8f] transition-colors"
           >
             Sign up
           </Link>
         </p>
 
-        <div className="mt-8 bg-white/30 dark:bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl rounded-3xl p-8">
+        {/* Login Form */}
+        <div className="mt-8 bg-white/80 backdrop-blur-xl border border-white/30 shadow-xl rounded-3xl p-8">
           {error && (
-            <div className="mb-4 bg-red-100/50 dark:bg-red-500/10 border-l-4 border-[#F97316] p-4 rounded">
-              <div className="flex items-center gap-2 text-sm text-[#111827] dark:text-white">
+            <div className="mb-4 bg-red-100/50 border-l-4 border-red-500 p-4 rounded">
+              <div className="flex items-center gap-2 text-sm text-red-800">
                 {error}
               </div>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
+              <label htmlFor="email" className="block text-sm font-medium mb-1 text-gray-700">
                 Email address
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaEnvelope className="text-gray-400" />
+                  <FaEnvelope className="text-gray-500" />
                 </div>
                 <input
                   type="email"
@@ -97,20 +96,21 @@ const Login = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-[#034078] bg-white/70 dark:bg-[#2A2A2E] text-sm focus:outline-none"
+                  className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-sm focus:outline-none placeholder-gray-400"
                   placeholder="example@bookit.com"
                   required
                 />
               </div>
             </div>
 
+            {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium mb-1">
+              <label htmlFor="password" className="block text-sm font-medium mb-1 text-gray-700">
                 Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FaLock className="text-gray-400" />
+                  <FaLock className="text-gray-500" />
                 </div>
                 <input
                   type="password"
@@ -118,16 +118,17 @@ const Login = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 focus:ring-2 focus:ring-[#034078] bg-white/70 dark:bg-[#2A2A2E] text-sm focus:outline-none"
+                  className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-sm focus:outline-none placeholder-gray-400"
                   placeholder="********"
                   required
                 />
               </div>
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full flex justify-center items-center py-3 px-4 rounded-xl shadow-lg text-white text-sm font-semibold bg-gradient-to-r from-[#034078] to-[#1282a2] hover:from-[#1282a2] hover:to-[#034078] transition duration-300"
+              className="w-full flex justify-center items-center py-3 px-4 rounded-xl shadow-lg text-white text-sm font-semibold bg-gradient-to-r from-[#f40752] to-[#f9ab8f] hover:from-[#f9ab8f] hover:to-[#f40752] transition-all duration-300 hover:shadow-xl"
             >
               Login
             </button>

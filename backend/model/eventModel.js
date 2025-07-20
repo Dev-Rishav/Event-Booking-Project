@@ -329,62 +329,69 @@ const Event = {
     
 
 
-    createShowAndSeats: async ({ event_id, venue_name, start_time, end_time, show_date, plan_name }) => {
-        try {
-          await pool.query('BEGIN');
+    createShowAndSeats: async ({ event_id, venue_name, start_time, end_time, show_date, seating_plan }) => {
+      try {
+        await pool.query('BEGIN');
     
-          // 1. Get the layout from seating_plans
-          const layoutRes = await pool.query(
-            'SELECT layout FROM seating_plans WHERE plan_name = $1',
-            [plan_name]
-          );
+        // 1. Get the layout from seating_plans
+        const layoutRes = await pool.query(
+          'SELECT layout FROM seating_plans WHERE plan_name = $1',
+          [seating_plan]
+        );
     
-          if (layoutRes.rowCount === 0) {
-            throw new Error('Seating layout not found');
-          }
+        if (layoutRes.rowCount === 0) {
+          throw new Error('Seating layout not found');
+        }
     
-          const layout = layoutRes.rows[0].layout;
+        const layout = layoutRes.rows[0].layout;
     
-          // 2. Count total seats
-          let totalSeats = 0;
-          layout.sections.forEach(section => {
-            totalSeats += section.rows.length * section.seats_per_row;
-          });
+        // 2. Count total seats
+        let totalSeats = 0;
+        layout.sections.forEach(section => {
+          totalSeats += section.rows.length * section.seats_per_row;
+        });
     
-          // 3. Create the show
-          const showRes = await pool.query(
-            `INSERT INTO shows (event_id, venue_name, start_time, end_time, total_seats, show_date)
-             VALUES ($1, $2, $3, $4, $5, $6)
-             RETURNING show_id`,
-            [event_id, venue_name, start_time, end_time, totalSeats, show_date]
-          );
+        // 3. Create the show
+        const showRes = await pool.query(
+          `INSERT INTO shows (event_id, venue_name, start_time, end_time, total_seats, show_date, seating_plan)
+           VALUES ($1, $2, $3, $4, $5, $6, $7)
+           RETURNING show_id`,
+          [event_id, venue_name, start_time, end_time, totalSeats, show_date, seating_plan]
+        );
     
-          const show_id = showRes.rows[0].show_id;
+        const show_id = showRes.rows[0].show_id;
     
-          // 4. Insert seats
-          let seatCounter = 1;
-          for (const section of layout.sections) {
-            for (const row of section.rows) {
-              for (let i = 1; i <= section.seats_per_row; i++) {
-                const seat_number = `${row}${i}`; // e.g., A1, A2, B5 etc.
-                await pool.query(
-                  `INSERT INTO seats (seat_number, show_id, seat_category, price)
-                   VALUES ($1, $2, $3, $4)`,
-                  [seat_number, show_id, section.category, section.price]
-                );
-                seatCounter++;
-              }
+        // 4. Insert seats with new columns
+        for (const section of layout.sections) {
+          for (const row of section.rows) {
+            for (let i = 1; i <= section.seats_per_row; i++) {
+              const seat_number = `${row}${i}`; // e.g., A1, A2, B5 etc.
+    
+              await pool.query(
+                `INSERT INTO seats (seat_number, show_id, seat_category, price, row, section, status)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                [
+                  seat_number,
+                  show_id,
+                  section.category,
+                  section.price,
+                  row,
+                  section.name || section.category, // Section name from layout
+                  'available'
+                ]
+              );
             }
           }
+        }
     
-          await pool.query('COMMIT');
-          return { show_id, total_seats: totalSeats };
-        } catch (error) {
-          await pool.query('ROLLBACK');
-          throw error;
-        } 
+        await pool.query('COMMIT');
+        return { show_id, total_seats: totalSeats };
+    
+      } catch (error) {
+        await pool.query('ROLLBACK');
+        throw error;
       }
-}
-
+    }
+  }    
 
 export default Event 
