@@ -97,25 +97,22 @@ const UserEvents = () => {
       <div className="p-5 flex flex-col flex-grow">
         <h3 className="text-xl font-bold mb-2 text-gray-800">{event.name}</h3>
   
-        <div className="text-sm text-gray-600 flex items-center gap-2 mb-1">
-          <span className="bg-pink-100 text-pink-700 p-1 rounded-full">
-            📍
-          </span>
-          <span>{event.venue || event.city}</span>
-        </div>
-  
         <div className="text-sm text-gray-600 flex items-center gap-2 mb-3">
           <span className="bg-pink-100 text-pink-700 p-1 rounded-full">
             📅
           </span>
           <span>
-            {new Date(event.event_date).toLocaleDateString("en-US", {
-              weekday: "short",
+            {new Date(event.start_date).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric"
+            })}
+          </span>
+          -
+          <span>
+            {new Date(event.end_date).toLocaleDateString("en-US", {
               year: "numeric",
               month: "short",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
+              day: "numeric"
             })}
           </span>
         </div>

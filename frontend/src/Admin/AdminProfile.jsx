@@ -59,103 +59,117 @@ const AdminProfile = () => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="min-h-screen flex items-center justify-center p-4 lg:ml-60"
     >
       <motion.div
-        initial={{ opacity: 0, scale: 0.97 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.4 }}
-        className="max-w-4xl mx-auto bg-white dark:bg-gray-900 rounded-3xl shadow-xl overflow-hidden"
+        className="w-full max-w-md"
       >
-        {/* Profile Header */}
-        <div className="bg-gradient-to-r from-gray-800 to-gray-600 dark:from-gray-700 dark:to-gray-600 p-8 text-center">
-          <div className="flex justify-center">
-            <FaUserCircle className="text-[90px] text-white bg-gray-300 dark:bg-gray-800 rounded-full p-2 border-4 border-white shadow-lg" />
+        <div className="bg-white/90 backdrop-blur-md rounded-xl shadow-lg border border-white/30 overflow-hidden">
+          {/* Profile Header */}
+          <div className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] p-6 text-center">
+            <div className="flex justify-center">
+              <FaUserCircle className="text-6xl text-white bg-[#f9ab8f] rounded-full p-2 border-4 border-white shadow-sm" />
+            </div>
+            <h2 className="mt-3 text-xl font-bold text-white">
+              Admin Profile
+            </h2>
           </div>
-          <h2 className="mt-4 text-3xl font-extrabold text-white">User Profile</h2>
-          <p className="mt-2 text-indigo-100">Manage your account information</p>
-        </div>
 
-        {/* Profile Content */}
-        <div className="px-8 py-10 sm:p-12 space-y-8">
-          {[
-            { label: 'Name', icon: <FaUserTag />, value: user.name },
-            { label: 'Email', icon: <FaEnvelope />, value: user.email },
-            { label: 'Role', icon: <FaUserTag />, value: user.role?.toUpperCase() }
-          ].map((item, idx) => (
+          {/* Profile Content */}
+          <div className="p-6 space-y-4">
+            {[
+              {
+                icon: <FaUserTag className="text-[#f40752] text-lg" />,
+                label: "Name",
+                value: user.name
+              },
+              {
+                icon: <FaEnvelope className="text-[#f40752] text-lg" />,
+                label: "Email",
+                value: user.email
+              },
+              {
+                icon: <FaUserTag className="text-[#f40752] text-lg" />,
+                label: "Role",
+                value: user.role?.toUpperCase()
+              }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.01 }}
+                className="flex items-center gap-4 p-3 bg-white/80 rounded-lg border border-white/30 shadow-sm"
+              >
+                <div className="bg-[#f9ab8f]/20 p-2 rounded-full">{item.icon}</div>
+                <div className="flex-1">
+                  <p className="text-xs font-medium text-gray-500">{item.label}</p>
+                  <p className="text-sm font-semibold text-gray-800 break-all">
+                    {item.value}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+
+            {/* Phone Field */}
             <motion.div
-              key={idx}
-              layout
-              className="flex items-start gap-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+              whileHover={{ scale: 1.01 }}
+              className="flex items-center gap-4 p-3 bg-white/80 rounded-lg border border-white/30 shadow-sm"
             >
-              <div className="bg-indigo-100 dark:bg-indigo-900 p-3 rounded-full text-gray-700 dark:text-gray-300">
-                {item.icon}
+              <div className="bg-[#f9ab8f]/20 p-2 rounded-full">
+                <FaPhoneAlt className="text-[#f40752] text-lg" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">{item.label}</p>
-                <p className="mt-1 text-xl font-semibold text-gray-800 dark:text-gray-100 break-all">
-                  {item.value}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-
-          {/* Phone Field */}
-          <motion.div
-            layout
-            className="flex items-start gap-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
-          >
-            <div className="bg-indigo-100 dark:bg-indigo-900 p-3 rounded-full text-gray-700 dark:text-gray-300">
-              <FaPhoneAlt />
-            </div>
-            <div className="flex-1 w-full">
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase">Phone</p>
-              {editing ? (
-                <div className="mt-2 flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                  <input
-                    type="text"
-                    value={newPhone}
-                    onChange={(e) => setNewPhone(e.target.value)}
-                    className="flex-1 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 bg-white dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                    placeholder="Enter new phone number"
-                  />
-                  <div className="flex gap-2">
+                <p className="text-xs font-medium text-gray-500">Phone</p>
+                {editing ? (
+                  <div className="mt-1 flex flex-col gap-2">
+                    <input
+                      type="text"
+                      value={newPhone}
+                      onChange={(e) => setNewPhone(e.target.value)}
+                      className="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#f40752]/50"
+                      placeholder="Enter phone number"
+                    />
+                    <div className="flex gap-2 justify-end">
+                      <button
+                        onClick={handleSave}
+                        className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white px-3 py-1 rounded-md text-sm flex items-center gap-1"
+                      >
+                        <FaCheck size={12} />
+                        <span>Save</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setEditing(false);
+                          setNewPhone(user.phone);
+                        }}
+                        className="bg-gray-200 text-gray-700 px-3 py-1 rounded-md text-sm flex items-center gap-1"
+                      >
+                        <FaTimes size={12} />
+                        <span>Cancel</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm font-semibold text-gray-800">
+                      {user.phone || 'Not provided'}
+                    </p>
                     <button
-                      onClick={handleSave}
-                      className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+                      onClick={() => setEditing(true)}
+                      className="text-[#f40752] hover:text-[#f9ab8f] text-sm flex items-center gap-1"
                     >
-                      <FaCheck />
-                      <span>Save</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditing(false);
-                        setNewPhone(user.phone);
-                      }}
-                      className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-lg flex items-center gap-2 transition"
-                    >
-                      <FaTimes />
-                      <span>Cancel</span>
+                      <FaEdit size={12} />
+                      <span>Edit</span>
                     </button>
                   </div>
-                </div>
-              ) : (
-                <div className="mt-1 flex justify-between items-center">
-                  <p className="text-xl font-semibold text-gray-800 dark:text-gray-100">{user.phone || 'Not provided'}</p>
-                  <button
-                    onClick={() => setEditing(true)}
-                    className="text-red-600 hover:text-gray-800 dark:hover:text-gray-200 font-medium flex items-center gap-2 transition"
-                  >
-                    <FaEdit />
-                    <span>Edit</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </motion.div>
+                )}
+              </div>
+            </motion.div>
+          </div>
         </div>
       </motion.div>
     </motion.div>
