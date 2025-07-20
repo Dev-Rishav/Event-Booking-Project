@@ -8,7 +8,7 @@ const OrganizerLayout = () => {
       <OrganizerSidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 p-6 ml-64">
+      <div className="flex-1 p-6">
         <Outlet /> {/* This will dynamically load the clicked page */}
       </div>
     </div>

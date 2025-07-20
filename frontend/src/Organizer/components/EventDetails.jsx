@@ -50,26 +50,27 @@ const EventDetails = () => {
     return <p className="text-center text-red-500">No event selected</p>;
 
   return (
-    <div className="p-6 my-12 max-w-5xl mx-auto">
+    <div className="p-4 md:p-6 my-10 mt-16 max-w-5xl mx-auto">
+      {/* Event Card */}
       <motion.div
         layout
-        className="bg-white/80 dark:bg-[#0f172a]/60 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden backdrop-blur-md"
+        className="bg-white/80 rounded-xl shadow-xl border border-white/30 mb-8 overflow-hidden backdrop-blur-md"
       >
         {/* Event Image */}
         <div className="w-full aspect-video overflow-hidden">
-  <img
-    src={selectedEvent.image || "https://via.placeholder.com/800x400?text=No+Image"}
-    alt={selectedEvent.title}
-    className="w-full h-full object-cover object-center"
-  />
-</div>
+          <img
+            src={selectedEvent.image || "https://via.placeholder.com/800x400?text=No+Image"}
+            alt={selectedEvent.title}
+            className="w-full h-full object-cover object-center"
+          />
+        </div>
 
         {/* Event Info */}
-        <div className="p-6">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+        <div className="p-4 md:p-6">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
             {selectedEvent.title}
           </h2>
-          <div className="space-y-2 text-gray-700 dark:text-gray-300">
+          <div className="space-y-2 text-gray-700">
             <p>
               <span className="font-semibold">Category:</span> {selectedEvent.category}
             </p>
@@ -86,10 +87,10 @@ const EventDetails = () => {
             </p>
           </div>
 
-          <div className="flex gap-4 mt-6">
+          <div className="flex flex-col sm:flex-row gap-4 mt-6">
             <button
               onClick={() => navigate(-1)}
-              className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition"
+              className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all"
             >
               Back
             </button>
@@ -97,7 +98,7 @@ const EventDetails = () => {
               onClick={() =>
                 navigate(`/organizer/events/create-show/${selectedEvent.event_id}`)
               }
-              className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition"
+              className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white px-4 py-2 rounded-lg hover:shadow-lg transition-all"
             >
               Create New Show
             </button>
@@ -108,69 +109,73 @@ const EventDetails = () => {
       {/* Show List */}
       <motion.div
         layout
-        className="bg-white/80 dark:bg-[#0f172a]/60 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 mb-10 backdrop-blur-md"
+        className="bg-white/80 rounded-xl shadow-xl p-4 md:p-6 border border-white/30 mb-8 backdrop-blur-md"
       >
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
           Show List
         </h2>
 
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
-              <th className="p-3 border">City</th>
-              <th className="p-3 border">Total Seats</th>
-              <th className="p-3 border">Date</th>
-              <th className="p-3 border">Starts At</th>
-              <th className="p-3 border">Ends At</th>
-            </tr>
-          </thead>
-          <tbody>
-            <AnimatePresence>
-              {shows.length > 0 ? (
-                shows.map((show, index) => (
-                  <motion.tr
-                    layout
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ type: "spring", stiffness: 70, damping: 20 }}
-                    key={show._id || index}
-                    className="text-center even:bg-white dark:even:bg-gray-900 odd:bg-gray-50 dark:odd:bg-gray-800"
-                  >
-                    <td className="p-3 border">{show.venue_name}</td>
-                    <td className="p-3 border">{show.total_seats}</td>
-                    <td className="p-3 border">{show.show_date}</td>
-                    <td className="p-3 border">{show.start_time}</td>
-                    <td className="p-3 border">{show.end_time}</td>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white">
+                <th className="p-2 md:p-3 border text-sm md:text-base">City</th>
+                <th className="p-2 md:p-3 border text-sm md:text-base">Seats</th>
+                <th className="p-2 md:p-3 border text-sm md:text-base">Date</th>
+                <th className="p-2 md:p-3 border text-sm md:text-base">Starts</th>
+                <th className="p-2 md:p-3 border text-sm md:text-base">Ends</th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence>
+                {shows.length > 0 ? (
+                  shows.map((show, index) => (
+                    <motion.tr
+                      layout
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ type: "spring", stiffness: 70, damping: 20 }}
+                      key={show._id || index}
+                      className="text-center even:bg-white odd:bg-gray-50 hover:bg-gray-100"
+                    >
+                      <td className="p-2 md:p-3 border text-sm md:text-base">{show.venue_name}</td>
+                      <td className="p-2 md:p-3 border text-sm md:text-base">{show.total_seats}</td>
+                      <td className="p-2 md:p-3 border text-sm md:text-base">
+                        {new Date(show.show_date).toLocaleDateString()}
+                      </td>
+                      <td className="p-2 md:p-3 border text-sm md:text-base">{show.start_time}</td>
+                      <td className="p-2 md:p-3 border text-sm md:text-base">{show.end_time}</td>
+                    </motion.tr>
+                  ))
+                ) : (
+                  <motion.tr layout>
+                    <td colSpan="5" className="text-center p-4 text-gray-600">
+                      No shows created.
+                    </td>
                   </motion.tr>
-                ))
-              ) : (
-                <motion.tr layout>
-                  <td colSpan="5" className="text-center p-4 text-gray-600 dark:text-gray-400">
-                    No shows created.
-                  </td>
-                </motion.tr>
-              )}
-            </AnimatePresence>
-          </tbody>
-        </table>
+                )}
+              </AnimatePresence>
+            </tbody>
+          </table>
+        </div>
       </motion.div>
 
       {/* Reviews */}
       <motion.div
         layout
-        className="bg-white/80 dark:bg-[#0f172a]/60 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 backdrop-blur-md"
+        className="bg-white/80 rounded-xl shadow-xl p-4 md:p-6 border border-white/30 backdrop-blur-md"
       >
-        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+        <h3 className="text-xl font-bold text-gray-800 mb-4">
           All Reviews
         </h3>
 
         {loading ? (
-          <p className="text-gray-500">Loading reviews...</p>
+          <p className="text-gray-600">Loading reviews...</p>
         ) : reviews.length === 0 ? (
-          <p className="text-gray-500">No reviews yet.</p>
+          <p className="text-gray-600">No reviews yet.</p>
         ) : (
-          <ul className="space-y-4">
+          <ul className="space-y-3">
             <AnimatePresence>
               {reviews.map((r, index) => (
                 <motion.li
@@ -179,12 +184,12 @@ const EventDetails = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="border rounded-lg py-3 px-4 bg-white dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+                  className="border rounded-lg py-3 px-4 bg-white hover:bg-gray-50 transition"
                 >
-                  <p className="text-gray-800 dark:text-gray-100 mb-1">{r.review_text}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-gray-800 mb-1">{r.review_text}</p>
+                  <p className="text-sm text-gray-600">
                     — {r.user_id},{" "}
-                    <span className="ml-1 text-xs text-gray-500 dark:text-gray-400">
+                    <span className="ml-1 text-xs text-gray-500">
                       {new Date(r.review_date).toLocaleString()}
                     </span>
                   </p>

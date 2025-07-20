@@ -139,9 +139,9 @@ const TicketBookingPage = () => {
     }, 0);
 
   const getSeatColor = (category, status, isSelected) => {
-    if (status === "booked") return "bg-red-400 text-white";
+    if (status === "booked") return "bg-gray-300 text-gray-600 cursor-not-allowed";
     if (isSelected)
-      return holdTimer ? "bg-indigo-600 text-white" : "bg-green-600 text-white";
+      return holdTimer ? "bg-indigo-600 text-white" : "bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white";
     const colors = {
       vip: "bg-purple-600 hover:bg-purple-700 text-white",
       premium: "bg-blue-600 hover:bg-blue-700 text-white",
@@ -156,7 +156,7 @@ const TicketBookingPage = () => {
 
   const renderTheatreLayout = () => (
     <div>
-      <div className="stage-area bg-red-700 h-16 mb-8 rounded-lg flex items-center justify-center shadow-lg">
+      <div className="stage-area bg-gradient-to-r from-[#f40752] to-[#f9ab8f] h-16 mb-8 rounded-lg flex items-center justify-center shadow-lg">
         <span className="text-white font-bold text-xl">STAGE</span>
       </div>
       <div className="flex flex-wrap justify-center gap-2">
@@ -168,17 +168,17 @@ const TicketBookingPage = () => {
               onClick={() =>
                 seat.status !== "booked" && handleSelectSeat(seat.seat_number)
               }
-              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-xl text-[10px] sm:text-xs font-medium border-2 p-1 flex flex-col justify-between items-center ${getSeatColor(
+              className={`w-16 h-16 sm:w-20 sm:h-20 rounded-lg text-xs font-medium border border-gray-200 p-1 flex flex-col justify-between items-center ${getSeatColor(
                 seat.seat_category,
                 seat.status,
-                selectedSeats.includes(seat.seat_number)
+                isSelected
               )} ${
                 seat.status === "booked"
                   ? "cursor-not-allowed"
                   : "hover:shadow-md"
               } ${
-                selectedSeats.includes(seat.seat_number)
-                  ? "ring-2 ring-offset-2 ring-blue-500"
+                isSelected
+                  ? "ring-2 ring-offset-2 ring-pink-500"
                   : ""
               }`}
               disabled={seat.status === "booked" || isHolding}
@@ -189,11 +189,9 @@ const TicketBookingPage = () => {
               <div className="text-[10px] leading-tight text-center">
                 <div>${seat.price}</div>
                 <div>{seat.seat_category}</div>
-                <div
-                  className={`font-semibold ${
-                    seat.status === "booked" ? "text-red-200" : "text-white"
-                  }`}
-                >
+                <div className={`text-[8px] font-semibold ${
+                  seat.status === "booked" ? "text-red-100" : "text-white"
+                }`}>
                   {seat.status}
                 </div>
               </div>
@@ -220,14 +218,14 @@ const TicketBookingPage = () => {
       <div className="space-y-10">
         {Object.entries(seatsBySection).map(([sectionName, rows]) => (
           <div key={sectionName}>
-            <h3 className="text-center text-xl font-bold mb-4">
+            <h3 className="text-center text-xl font-bold mb-4 text-gray-800">
               {sectionName}
             </h3>
             {Object.entries(rows)
               .sort(([a], [b]) => a.localeCompare(b))
               .map(([rowLabel, rowSeats]) => (
                 <div key={rowLabel} className="mb-2 flex items-center gap-2">
-                  <span className="w-6 font-bold">{rowLabel}</span>
+                  <span className="w-6 font-bold text-gray-700">{rowLabel}</span>
                   <div className="grid grid-cols-12 gap-2 flex-grow">
                     {rowSeats
                       .sort((a, b) =>
@@ -244,17 +242,17 @@ const TicketBookingPage = () => {
                               seat.status !== "booked" &&
                               handleSelectSeat(seat.seat_number)
                             }
-                            className={`w-20 h-20 sm:w-24 sm:h-24 rounded-xl text-[10px] sm:text-xs font-medium border-2 p-1 flex flex-col justify-between items-center ${getSeatColor(
+                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-lg text-[8px] sm:text-xs font-medium border border-gray-200 p-1 flex flex-col justify-between items-center ${getSeatColor(
                               seat.seat_category,
                               seat.status,
-                              selectedSeats.includes(seat.seat_number)
+                              isSelected
                             )} ${
                               seat.status === "booked"
                                 ? "cursor-not-allowed"
                                 : "hover:shadow-md"
                             } ${
-                              selectedSeats.includes(seat.seat_number)
-                                ? "ring-2 ring-offset-2 ring-blue-500"
+                              isSelected
+                                ? "ring-2 ring-offset-2 ring-pink-500"
                                 : ""
                             }`}
                             disabled={seat.status === "booked" || isHolding}
@@ -264,16 +262,12 @@ const TicketBookingPage = () => {
                             }}
                           >
                             <div className="font-bold">{seat.seat_number}</div>
-                            <div className="text-[10px] leading-tight text-center">
+                            <div className="text-[8px] leading-tight text-center">
                               <div>${seat.price}</div>
                               <div>{seat.seat_category}</div>
-                              <div
-                                className={`font-semibold ${
-                                  seat.status === "booked"
-                                    ? "text-red-200"
-                                    : "text-white"
-                                }`}
-                              >
+                              <div className={`text-[7px] font-semibold ${
+                                seat.status === "booked" ? "text-red-100" : "text-white"
+                              }`}>
                                 {seat.status}
                               </div>
                             </div>
@@ -305,14 +299,14 @@ const TicketBookingPage = () => {
       <div className="space-y-10">
         {Object.entries(seatsBySection).map(([sectionName, rows]) => (
           <div key={sectionName}>
-            <h3 className="text-center text-xl font-bold mb-4">
+            <h3 className="text-center text-xl font-bold mb-4 text-gray-800">
               {sectionName}
             </h3>
             {Object.entries(rows)
               .sort(([a], [b]) => a.localeCompare(b))
               .map(([rowLabel, rowSeats]) => (
                 <div key={rowLabel} className="mb-2 flex items-center gap-2">
-                  <span className="w-6 font-bold">{rowLabel}</span>
+                  <span className="w-6 font-bold text-gray-700">{rowLabel}</span>
                   <div className="grid grid-cols-10 gap-2 flex-grow">
                     {rowSeats
                       .sort((a, b) =>
@@ -329,17 +323,17 @@ const TicketBookingPage = () => {
                               seat.status !== "booked" &&
                               handleSelectSeat(seat.seat_number)
                             }
-                            className={`w-20 h-20 sm:w-24 sm:h-24 rounded-xl text-[10px] sm:text-xs font-medium border-2 p-1 flex flex-col justify-between items-center ${getSeatColor(
+                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-lg text-[8px] sm:text-xs font-medium border border-gray-200 p-1 flex flex-col justify-between items-center ${getSeatColor(
                               seat.seat_category,
                               seat.status,
-                              selectedSeats.includes(seat.seat_number)
+                              isSelected
                             )} ${
                               seat.status === "booked"
                                 ? "cursor-not-allowed"
                                 : "hover:shadow-md"
                             } ${
-                              selectedSeats.includes(seat.seat_number)
-                                ? "ring-2 ring-offset-2 ring-blue-500"
+                              isSelected
+                                ? "ring-2 ring-offset-2 ring-pink-500"
                                 : ""
                             }`}
                             disabled={seat.status === "booked" || isHolding}
@@ -349,16 +343,12 @@ const TicketBookingPage = () => {
                             }}
                           >
                             <div className="font-bold">{seat.seat_number}</div>
-                            <div className="text-[10px] leading-tight text-center">
+                            <div className="text-[8px] leading-tight text-center">
                               <div>${seat.price}</div>
                               <div>{seat.seat_category}</div>
-                              <div
-                                className={`font-semibold ${
-                                  seat.status === "booked"
-                                    ? "text-red-200"
-                                    : "text-white"
-                                }`}
-                              >
+                              <div className={`text-[7px] font-semibold ${
+                                seat.status === "booked" ? "text-red-100" : "text-white"
+                              }`}>
                                 {seat.status}
                               </div>
                             </div>
@@ -388,20 +378,20 @@ const TicketBookingPage = () => {
 
     return (
       <div>
-        <div className="screen-area bg-black h-14 mb-6 rounded-lg text-white flex items-center justify-center shadow-lg">
+        <div className="screen-area bg-gradient-to-r from-[#f40752] to-[#f9ab8f] h-14 mb-6 rounded-lg text-white flex items-center justify-center shadow-lg">
           <span className="font-semibold text-lg">SCREEN</span>
         </div>
         <div className="space-y-8">
           {Object.entries(seatsBySection).map(([sectionName, rows]) => (
             <div key={sectionName}>
-              <h3 className="text-center text-xl font-bold mb-4">
+              <h3 className="text-center text-xl font-bold mb-4 text-gray-800">
                 {sectionName}
               </h3>
               {Object.entries(rows)
                 .sort(([a], [b]) => a.localeCompare(b))
                 .map(([rowLabel, rowSeats]) => (
                   <div key={rowLabel} className="mb-2 flex items-center gap-2">
-                    <span className="w-6 font-bold">{rowLabel}</span>
+                    <span className="w-6 font-bold text-gray-700">{rowLabel}</span>
                     <div className="grid grid-cols-10 gap-2 flex-grow">
                       {rowSeats
                         .sort((a, b) =>
@@ -418,17 +408,17 @@ const TicketBookingPage = () => {
                                 seat.status !== "booked" &&
                                 handleSelectSeat(seat.seat_number)
                               }
-                              className={`w-20 h-20 sm:w-24 sm:h-24 rounded-xl text-[10px] sm:text-xs font-medium border-2 p-1 flex flex-col justify-between items-center ${getSeatColor(
+                              className={`w-12 h-12 sm:w-14 sm:h-14 rounded-lg text-[8px] sm:text-xs font-medium border border-gray-200 p-1 flex flex-col justify-between items-center ${getSeatColor(
                                 seat.seat_category,
                                 seat.status,
-                                selectedSeats.includes(seat.seat_number)
+                                isSelected
                               )} ${
                                 seat.status === "booked"
                                   ? "cursor-not-allowed"
                                   : "hover:shadow-md"
                               } ${
-                                selectedSeats.includes(seat.seat_number)
-                                  ? "ring-2 ring-offset-2 ring-blue-500"
+                                isSelected
+                                  ? "ring-2 ring-offset-2 ring-pink-500"
                                   : ""
                               }`}
                               disabled={seat.status === "booked" || isHolding}
@@ -440,16 +430,12 @@ const TicketBookingPage = () => {
                               <div className="font-bold">
                                 {seat.seat_number}
                               </div>
-                              <div className="text-[10px] leading-tight text-center">
+                              <div className="text-[8px] leading-tight text-center">
                                 <div>${seat.price}</div>
                                 <div>{seat.seat_category}</div>
-                                <div
-                                  className={`font-semibold ${
-                                    seat.status === "booked"
-                                      ? "text-red-200"
-                                      : "text-white"
-                                  }`}
-                                >
+                                <div className={`text-[7px] font-semibold ${
+                                  seat.status === "booked" ? "text-red-100" : "text-white"
+                                }`}>
                                   {seat.status}
                                 </div>
                               </div>
@@ -468,18 +454,23 @@ const TicketBookingPage = () => {
 
   const renderSeatLayout = () => {
     if (loading)
-      return <div className="text-center py-12">Loading seat map...</div>;
+      return (
+        <div className="text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading seat map...</p>
+        </div>
+      );
     if (!seats.length)
       return (
         <div className="text-center py-12">
-          No seats available for this event
+          <p className="text-gray-600">No seats available for this event</p>
         </div>
       );
 
     switch (venueType) {
       case "stadium":
         return renderStadiumLayout();
-      case "open_air":
+      case "oper_air":
         return renderOpenAirLayout();
       case "cinema":
         return renderCinemaLayout();
@@ -494,14 +485,25 @@ const TicketBookingPage = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="w-full min-h-[calc(100vh-4rem)] p-4 sm:p-6 max-w-7xl mx-auto my-8"
+      className="w-full min-h-[calc(100vh-4rem)] p-4 sm:p-6 max-w-7xl mx-auto"
     >
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">
-        🎟️ Book Your Tickets
-      </h1>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] rounded-xl p-6 mb-8 text-white shadow-lg"
+      >
+        <h1 className="text-2xl sm:text-3xl font-bold text-center">
+          🎟️ Book Your Tickets
+        </h1>
+        {selectedUserShow && (
+          <p className="text-center mt-2 opacity-90">
+            {selectedUserShow.venue_name} • {selectedUserShow.show_date}
+          </p>
+        )}
+      </motion.div>
 
       <div className="text-center mb-6">
-        <span className="inline-block bg-white dark:bg-gray-800 rounded-full px-4 py-2 text-sm font-semibold capitalize shadow-sm">
+        <span className="inline-block bg-white rounded-full px-4 py-2 text-sm font-semibold capitalize shadow-sm border border-gray-200">
           {venueType} seating
         </span>
       </div>
@@ -518,16 +520,16 @@ const TicketBookingPage = () => {
         ].map((label) => (
           <div
             key={label}
-            className="flex items-center px-3 py-1 bg-white dark:bg-gray-800 rounded-full shadow-xs border"
+            className="flex items-center px-3 py-1 bg-white rounded-full shadow-xs border border-gray-200"
           >
             <div
               className={`w-3 h-3 rounded-full mr-2 ${
                 label === "Selected"
-                  ? "bg-green-600"
+                  ? "bg-gradient-to-r from-[#f40752] to-[#f9ab8f]"
                   : label === "Held"
                   ? "bg-indigo-600"
                   : label === "Booked"
-                  ? "bg-red-400"
+                  ? "bg-gray-300"
                   : label === "VIP"
                   ? "bg-purple-600"
                   : label === "Premium"
@@ -537,41 +539,48 @@ const TicketBookingPage = () => {
                   : "bg-gray-600"
               }`}
             ></div>
-            <span className="text-xs sm:text-sm">{label}</span>
+            <span className="text-xs sm:text-sm text-gray-700">{label}</span>
           </div>
         ))}
       </div>
 
-      <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 sm:p-6 mb-8">
+      <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-8 border border-gray-100">
         {renderSeatLayout()}
       </div>
 
       {selectedSeats.length > 0 && (
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-md p-4 sm:p-6 mb-8">
-          <h3 className="text-xl font-bold mb-4">Your Tickets</h3>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white rounded-xl shadow-md p-4 sm:p-6 mb-8 border border-gray-100"
+        >
+          <h3 className="text-xl font-bold mb-4 text-gray-800">Your Tickets</h3>
           <div className="flex overflow-x-auto pb-4 gap-4">
             {selectedSeats.map((seatNo) => {
               const seat = seats.find((s) => s.seat_number === seatNo);
               return (
                 <div
                   key={seatNo}
-                  className="flex-shrink-0 w-48 h-32 bg-gradient-to-br from-blue-50 to-gray-50 dark:from-gray-800 dark:to-gray-700 border rounded-lg p-4 shadow-sm flex flex-col justify-between"
+                  className="flex-shrink-0 w-48 h-32 bg-gradient-to-br from-gray-50 to-white border rounded-lg p-4 shadow-sm flex flex-col justify-between"
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-xs">Seat</p>
-                      <p className="font-bold text-lg">{seatNo}</p>
+                      <p className="text-xs text-gray-500">Seat</p>
+                      <p className="font-bold text-lg text-gray-800">{seatNo}</p>
                     </div>
-                    <span className="px-2 py-1 text-xs rounded-full bg-gray-100 dark:bg-gray-700">
+                    <span className="px-2 py-1 text-xs rounded-full bg-pink-100 text-pink-700">
                       {seat?.seat_category || "Standard"}
                     </span>
                   </div>
                   <div className="flex justify-between items-end">
                     <div>
-                      <p className="text-xs">Price</p>
-                      <p className="font-bold text-blue-600">
+                      <p className="text-xs text-gray-500">Price</p>
+                      <p className="font-bold text-pink-600">
                         ${seat?.price?.toFixed(2) || "0.00"}
                       </p>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {seat?.status || "selected"}
                     </div>
                   </div>
                 </div>
@@ -580,42 +589,58 @@ const TicketBookingPage = () => {
           </div>
 
           <div className="flex justify-between items-center pt-4 border-t mt-4">
-            <span className="text-lg font-semibold">Total:</span>
-            <span className="text-xl font-bold text-blue-600">
+            <span className="text-lg font-semibold text-gray-800">Total:</span>
+            <span className="text-xl font-bold text-pink-600">
               ${calculateTotalAmount().toFixed(2)}
             </span>
           </div>
-        </div>
+        </motion.div>
       )}
 
       {selectedSeats.length > 0 && (
         <div className="text-center space-x-4">
           {!holdTimer ? (
-            <button
+            <motion.button
               onClick={holdSeats}
               disabled={isHolding}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition-all duration-200"
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] hover:shadow-lg text-white px-8 py-3 rounded-full text-lg font-bold shadow-md transition-all"
             >
               {isHolding ? "Processing..." : "Hold Seats (5 mins)"}
-            </button>
+            </motion.button>
           ) : (
             <>
-              <button
+              <motion.button
                 onClick={handlePayNow}
                 disabled={isHolding}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition-all duration-200"
+                whileTap={{ scale: 0.95 }}
+                className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] hover:shadow-lg text-white px-8 py-3 rounded-full text-lg font-bold shadow-md transition-all"
               >
                 {isHolding ? "Processing..." : "Confirm & Pay Now"}
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={clearHold}
                 disabled={isHolding}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-full text-lg font-bold shadow-lg transition-all duration-200"
+                whileTap={{ scale: 0.95 }}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-full text-lg font-bold shadow-md transition-all"
               >
                 Cancel Hold
-              </button>
+              </motion.button>
             </>
           )}
+        </div>
+      )}
+
+      {bookingError && (
+        <div className="mt-4 p-4 bg-red-50 text-red-600 rounded-lg text-center">
+          {bookingError}
+        </div>
+      )}
+
+      {holdTimer && (
+        <div className="mt-4 text-center text-gray-700">
+          <p>Your seats are held for: <span className="font-bold">{formatTime(timeLeft)}</span></p>
+          <p className="text-sm text-gray-500">Complete your booking before time runs out</p>
         </div>
       )}
     </motion.div>

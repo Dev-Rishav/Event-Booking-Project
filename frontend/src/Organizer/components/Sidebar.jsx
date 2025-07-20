@@ -10,6 +10,7 @@ import {
   FaBell,
   FaBars,
   FaCrown,
+  FaTicketAlt,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -57,24 +58,24 @@ const Sidebar = () => {
   return (
     <>
       {/* Top Navbar */}
-      <div className="backdrop-blur-md bg-white/30 dark:bg-[#1B1C1E]/90 border-b border-white/10 dark:border-white/10 text-gray-800 dark:text-white fixed top-0 left-0 w-full h-16 z-50 flex justify-between items-center px-6 shadow-md">
+      <div className="backdrop-blur-md bg-white/80 border-b border-white/30 text-gray-800 fixed top-0 left-0 w-full h-16 z-50 flex justify-between items-center px-6 shadow-md">
         <div className="flex items-center gap-4">
           <FaBars
-            className="text-2xl cursor-pointer md:hidden"
+            className="text-2xl cursor-pointer md:hidden text-[#f40752]"
             onClick={toggleSidebar}
           />
           <h1 className="text-xl font-bold flex items-center">
-            <div className="h-9 w-9 bg-gradient-to-r from-[#034078] to-[#1282a2] rounded-full flex items-center justify-center mr-2 shadow-sm">
-              <FaFilm className="text-white text-lg" />
+            <div className="h-9 w-9 bg-gradient-to-r from-[#f40752] to-[#f9ab8f] rounded-lg flex items-center justify-center mr-2 shadow-sm transform rotate-12">
+              <FaTicketAlt className="text-white text-lg" />
             </div>
-            BOOKiT
-            <span className="text-[#1282a2] dark:text-[#1282a2]">.com</span>
+            <span className="font-bold">BOOKiT</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f40752] to-[#f9ab8f] ml-1">.com</span>
           </h1>
         </div>
 
         <div className="flex items-center gap-4 relative">
           <button onClick={handleBellClick} className="relative">
-            <FaBell className="text-xl" />
+            <FaBell className="text-xl text-[#f40752]" />
             {hasNewNotification && (
               <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-ping" />
             )}
@@ -82,7 +83,7 @@ const Sidebar = () => {
 
           <button
             onClick={handleLogout}
-            className="bg-blue-00 bg-white text-[#1282a2] hover:bg-gray-100 px-4 py-2 rounded-lg shadow transition"
+            className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white hover:shadow-lg px-4 py-2 rounded-lg shadow transition transform hover:scale-105"
           >
             Logout
           </button>
@@ -91,14 +92,17 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <motion.div
-        animate={{ width: isSidebarOpen ? 260 : 80 }}
+        animate={{ 
+          width: isSidebarOpen ? 260 : 80,
+          x: window.innerWidth < 768 ? (isSidebarOpen ? 0 : -260) : 0
+        }}
         transition={{ duration: 0.3 }}
-        className="backdrop-blur-md bg-white/30 dark:bg-[#1B1C1E]/90 text-gray-800 dark:text-white fixed top-16 left-0 h-screen overflow-hidden shadow-lg flex flex-col"
+        className="backdrop-blur-md bg-white/80 text-gray-800 fixed top-16 left-0 h-[calc(100vh-4rem)] overflow-hidden shadow-lg flex flex-col z-40"
       >
         <div className="flex justify-between items-center p-4">
           {isSidebarOpen && <h2 className="text-lg font-semibold">Dashboard</h2>}
           <FaBars
-            className="text-2xl cursor-pointer hover:text-blue-500 transition hidden md:block"
+            className="text-2xl cursor-pointer text-[#f40752] transition hidden md:block"
             onClick={toggleSidebar}
           />
         </div>
@@ -111,12 +115,12 @@ const Sidebar = () => {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-3 rounded-lg transition-all ${
                   isActive
-                    ? "bg-gradient-to-r from-[#034078] to-[#1282a2] shadow-md"
-                    : "hover:bg-gray-300 dark:hover:bg-gray-700"
+                    ? "bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white shadow-md"
+                    : "hover:bg-gray-100"
                 }`
               }
             >
-              <span className="text-xl">{item.icon}</span>
+              <span className="text-xl flex-shrink-0">{item.icon}</span>
               <AnimatePresence>
                 {isSidebarOpen && (
                   <motion.span
@@ -139,15 +143,15 @@ const Sidebar = () => {
         ref={notificationRef}
         className={`${
           showDropdown ? "block" : "hidden"
-        } fixed right-4 top-20 w-[300px] max-h-[300px] overflow-y-auto bg-[#1B1C1E] text-white rounded-lg shadow-lg p-4 z-50`}
+        } fixed right-4 top-20 w-[300px] max-h-[300px] overflow-y-auto bg-white/90 backdrop-blur-lg border border-white/30 text-gray-800 rounded-lg shadow-lg p-4 z-50`}
       >
         {notifications.length === 0 ? (
-          <p className="text-center text-gray-400">No notifications</p>
+          <p className="text-center text-gray-500">No notifications</p>
         ) : (
           notifications.map((note) => (
             <div
               key={note.id}
-              className="p-2 border-b border-gray-600 flex justify-between items-start"
+              className="p-2 border-b border-gray-200 flex justify-between items-start"
             >
               <div>
                 <p className="font-bold">{note.title}</p>
@@ -155,7 +159,7 @@ const Sidebar = () => {
               </div>
               <button
                 onClick={() => removeNotification(note.id)}
-                className="text-red-400 text-xs"
+                className="text-[#f40752] text-xs"
               >
                 ✕
               </button>
@@ -163,6 +167,14 @@ const Sidebar = () => {
           ))
         )}
       </div>
+
+      {/* Mobile Overlay */}
+      {!isSidebarOpen && window.innerWidth < 768 && (
+        <div 
+          className="fixed inset-0 bg-black/30 z-30 md:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
     </>
   );
 };

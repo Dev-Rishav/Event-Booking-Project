@@ -43,15 +43,15 @@ const Subscription = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#f40752]"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="max-w-4xl mx-auto bg-red-50 dark:bg-red-950 border-l-4 border-red-500 p-6 rounded-lg my-8 shadow-sm">
-        <p className="text-red-700 dark:text-red-300 font-medium">{error}</p>
+      <div className="max-w-4xl mx-auto bg-red-100 border-l-4 border-red-500 p-6 rounded-lg my-8 shadow-sm">
+        <p className="text-red-700 font-medium">{error}</p>
       </div>
     );
   }
@@ -62,26 +62,26 @@ const Subscription = () => {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-7xl mx-auto my-18 px-4 sm:px-6 lg:px-8 py-12 bg-white/80 dark:bg-[#0f172a]/60 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 backdrop-blur-md"
+      className="max-w-7xl mx-auto my-10 px-4 sm:px-6 lg:px-8 py-8 bg-white/80 rounded-xl shadow-xl border border-white/30 backdrop-blur-md"
     >
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-900 dark:from-blue-400 dark:to-indigo-200">
+      <div className="text-center mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#f40752] to-[#f9ab8f]">
           Subscription Plans
         </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mt-2">
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto mt-3">
           Choose the perfect plan to unlock more events and premium features for your organization.
         </p>
       </div>
 
       {/* Current Plan */}
-      <motion.div layout className="bg-white/90 dark:bg-gray-900 rounded-xl shadow p-6 mb-12 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-2xl font-semibold text-blue-600 dark:text-blue-300 mb-6 flex items-center">
+      <motion.div layout className="bg-white/90 rounded-xl shadow p-6 mb-10 border border-white/30">
+        <h2 className="text-2xl font-semibold text-[#f40752] mb-6 flex items-center">
           <FaStar className="mr-3" />
           Your Current Subscription
         </h2>
 
         {subscriptionStatus?.current_subscription_id ? (
-          <motion.div layout className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-inner bg-gray-50 dark:bg-gray-800">
+          <motion.div layout className="border border-gray-200 rounded-lg p-6 shadow-inner bg-gray-50">
             <div className="flex flex-col md:flex-row justify-between gap-6">
               <div>
                 <h3 className="text-xl font-bold mb-1">{currPlan?.plan_name || 'Current'} Plan</h3>
@@ -93,22 +93,22 @@ const Subscription = () => {
                     ['Organizer Email', currPlan?.organizer_email],
                     ['Status', 'Active']
                   ].map(([label, value], idx) => (
-                    <div key={idx} className="bg-white dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+                    <div key={idx} className="bg-white p-3 rounded-lg border border-gray-200">
+                      <p className="text-xs text-gray-500">{label}</p>
                       <p className="text-sm">{value}</p>
                     </div>
                   ))}
                 </div>
               </div>
               <div>
-                <span className="inline-block bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-sm">
+                <span className="inline-block bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white px-4 py-2 rounded-full text-sm font-medium shadow-sm">
                   Active Subscription
                 </span>
               </div>
             </div>
           </motion.div>
         ) : (
-          <motion.div layout className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 shadow-inner bg-gray-50 dark:bg-gray-800">
+          <motion.div layout className="border border-gray-200 rounded-lg p-6 shadow-inner bg-gray-50">
             <div className="flex flex-col md:flex-row justify-between gap-6">
               <div>
                 <h3 className="text-xl font-bold mb-1">Free Tier</h3>
@@ -117,7 +117,7 @@ const Subscription = () => {
                 </p>
               </div>
               <div>
-                <span className="inline-block bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-sm">
+                <span className="inline-block bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white px-4 py-2 rounded-full text-sm font-medium shadow-sm">
                   Free Plan
                 </span>
               </div>
@@ -127,28 +127,28 @@ const Subscription = () => {
       </motion.div>
 
       {/* Plan Cards */}
-      <motion.div layout className="mb-16">
-        <h2 className="text-2xl font-semibold text-blue-600 dark:text-blue-300 mb-8 flex items-center">
+      <motion.div layout className="mb-10">
+        <h2 className="text-2xl font-semibold text-[#f40752] mb-8 flex items-center">
           <FaFire className="mr-3" />
           Available Plans
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {plans.map((plan) => (
             <motion.div
               layout
               key={plan.plan_id}
-              whileHover={{ scale: 1.05 }}
-              className={`rounded-xl overflow-hidden bg-white dark:bg-gray-900 border ${
+              whileHover={{ scale: 1.03 }}
+              className={`rounded-xl overflow-hidden bg-white border ${
                 plan.plan_name === 'Enterprise'
-                  ? 'border-blue-500 dark:border-blue-300'
-                  : 'border-gray-200 dark:border-gray-700'
-              } shadow-lg`}
+                  ? 'border-[#f40752] shadow-xl'
+                  : 'border-gray-200 shadow-lg'
+              }`}
             >
               <div className={`px-6 py-4 ${
                 plan.plan_name === 'Enterprise'
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-700'
-                  : 'bg-gradient-to-r from-gray-700 to-gray-800'
+                  ? 'bg-gradient-to-r from-[#f40752] to-[#f9ab8f]'
+                  : 'bg-gradient-to-r from-gray-600 to-gray-700'
               }`}>
                 <div className="flex justify-between items-start">
                   <div>
@@ -156,7 +156,7 @@ const Subscription = () => {
                       {plan.plan_name}
                       {plan.plan_name === 'Enterprise' && <FaCrown className="ml-2 text-yellow-300" />}
                     </h3>
-                    <p className="text-gray-200 mt-1">{plan.description}</p>
+                    <p className="text-gray-100 mt-1">{plan.description}</p>
                   </div>
                   {plan.plan_name === 'Enterprise' && (
                     <span className="bg-yellow-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold">
@@ -173,13 +173,13 @@ const Subscription = () => {
                 </div>
                 <ul className="space-y-3 mb-8">
                   <li className="flex items-start">
-                    <FaCheck className="text-blue-600 mt-1 mr-3 flex-shrink-0" />
+                    <FaCheck className="text-[#f40752] mt-1 mr-3 flex-shrink-0" />
                     <span>
                       <span className="font-medium">{plan.max_events === 9999 ? 'Unlimited' : plan.max_events}</span> events per month
                     </span>
                   </li>
                   <li className="flex items-start">
-                    <FaCheck className="text-blue-600 mt-1 mr-3 flex-shrink-0" />
+                    <FaCheck className="text-[#f40752] mt-1 mr-3 flex-shrink-0" />
                     <span>
                       <span className="font-medium">{plan.duration_days}-day</span> subscription period
                     </span>
@@ -189,9 +189,9 @@ const Subscription = () => {
                   onClick={() => handleExplorePlan(plan.plan_id)}
                   className={`w-full py-3 px-6 rounded-lg font-bold transition-all duration-300 flex items-center justify-center ${
                     plan.plan_name === 'Enterprise'
-                      ? 'bg-gradient-to-r from-blue-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white shadow-lg'
-                      : 'bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 text-white shadow-md'
-                  }`}
+                      ? 'bg-gradient-to-r from-[#f40752] to-[#f9ab8f] hover:shadow-xl text-white'
+                      : 'bg-gradient-to-r from-gray-600 to-gray-700 hover:shadow-lg text-white'
+                  } hover:scale-[1.02]`}
                 >
                   Explore Plan <FaArrowRight className="ml-3" />
                 </button>

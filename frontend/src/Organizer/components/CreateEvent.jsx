@@ -59,15 +59,17 @@ const CreateEvent = () => {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-xl mx-auto my-26 p-6 sm:p-8 bg-white/80 dark:bg-[#0f172a]/60 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 backdrop-blur-md"
+      className="max-w-xl mx-auto my-10 md:my-20 p-4 md:p-8 bg-white/80 rounded-2xl shadow-xl border border-white/30 backdrop-blur-md"
     >
       {message && (
-        <p className="text-center text-green-600 dark:text-green-400 font-semibold mb-4">
+        <p className={`text-center font-semibold mb-4 ${
+          message.includes("success") ? "text-green-600" : "text-red-500"
+        }`}>
           {message}
         </p>
       )}
 
-      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6">
+      <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-gray-800">
         Create Event
       </h2>
 
@@ -79,7 +81,7 @@ const CreateEvent = () => {
           value={eventData.title}
           onChange={handleChange}
           required
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-gray-800 placeholder-gray-400"
         />
 
         <textarea
@@ -89,16 +91,16 @@ const CreateEvent = () => {
           onChange={handleChange}
           rows={4}
           required
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-gray-800 placeholder-gray-400"
         />
 
         <div>
-          <label className="block font-semibold mb-1">Seating Category</label>
+          <label className="block font-semibold mb-1 text-gray-700">Event Category</label>
           <select
-            name="plan_name"
+            name="category"
             value={eventData.category}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-gray-800"
             required
           >
             <option value="">Select Category</option>
@@ -110,35 +112,44 @@ const CreateEvent = () => {
           </select>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="w-full">
+            <label className="block font-semibold mb-1 text-gray-700">Start Date</label>
+            <input
+              type="date"
+              name="start_date"
+              value={eventData.start_date}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-gray-800"
+            />
+          </div>
+          <div className="w-full">
+            <label className="block font-semibold mb-1 text-gray-700">End Date</label>
+            <input
+              type="date"
+              name="end_date"
+              value={eventData.end_date}
+              onChange={handleChange}
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f40752]/50 bg-white/90 text-gray-800"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1 text-gray-700">Event Image</label>
           <input
-            type="date"
-            name="start_date"
-            value={eventData.start_date}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
-          />
-          <input
-            type="date"
-            name="end_date"
-            value={eventData.end_date}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-[#172554] text-gray-800 dark:text-gray-200"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full px-4 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gradient-to-r file:from-[#f40752] file:to-[#f9ab8f] file:text-white hover:file:shadow-md transition-all"
           />
         </div>
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="w-full px-4 py-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-300 dark:file:bg-gray-700 file:text-black dark:file:text-white hover:file:bg-gray-400 dark:hover:file:bg-gray-600"
-        />
-
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white py-3 rounded-lg font-semibold transition-all duration-200 shadow-md"
+          className="w-full bg-gradient-to-r from-[#f40752] to-[#f9ab8f] text-white py-3 rounded-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg hover:from-[#f9ab8f] hover:to-[#f40752] transform hover:scale-[1.02]"
         >
           Create Event
         </button>

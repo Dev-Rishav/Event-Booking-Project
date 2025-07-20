@@ -25,34 +25,34 @@ const Bookings = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#f40752]"></div>
       </div>
     );
   }
 
   if (bookings.length === 0) {
     return (
-      <div className="text-center py-10 text-gray-600 dark:text-gray-400">
+      <div className="text-center py-10 text-gray-600">
         No bookings found.
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-[#F1EFEC] dark:bg-gray-900 min-h-screen">
+    <div className="p-4 md:p-6 min-h-screen bg-gradient-to-br from-[#F5F7FA] to-[#E4EBF5]">
       <motion.h2
         layout
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="text-3xl font-bold mb-6 mt-12 text-center text-[#123458] dark:text-blue-300 bg-[#D4C9BE] dark:bg-gray-800 rounded-lg py-3 shadow-md"
+        className="text-2xl md:text-3xl font-bold mb-6 mt-8 md:mt-12 text-center text-transparent bg-clip-text bg-gradient-to-r from-[#f40752] to-[#f9ab8f]"
       >
         Your Show Bookings
       </motion.h2>
 
       <motion.div
         layout
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto"
       >
         <AnimatePresence>
           {bookings.map((booking, index) => (
@@ -63,42 +63,57 @@ const Bookings = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ type: "spring", stiffness: 150, damping: 20 }}
-              className="relative group bg-white dark:bg-gray-800 border border-[#D4C9BE] dark:border-gray-700 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all"
+              className="relative group bg-white/90 backdrop-blur-md border border-white/30 rounded-xl shadow-lg p-5 hover:shadow-xl transition-all hover:-translate-y-1"
             >
               {/* Ticket Icon */}
               <div className="absolute top-4 right-4">
-                <FaTicketAlt className="text-[#123458] dark:text-blue-400 text-2xl group-hover:scale-110 transition-transform" />
+                <div className="bg-gradient-to-r from-[#f40752] to-[#f9ab8f] p-2 rounded-lg shadow-sm">
+                  <FaTicketAlt className="text-white text-xl group-hover:rotate-12 transition-transform" />
+                </div>
               </div>
 
               {/* Event Title */}
-              <div className="text-xl font-bold text-[#123458] dark:text-blue-300 mb-3">
+              <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-3 pr-8">
                 {booking.event_title}
-              </div>
+              </h3>
 
-              <div className="space-y-2 text-sm text-[#030303] dark:text-gray-300">
-                <p><strong>Booked by:</strong> {booking.booked_by} ({booking.user_email})</p>
-                <p><strong>Seat:</strong> #{booking.seat_number} ({booking.seat_category})</p>
-                <p><strong>Price:</strong> ₹{booking.price}</p>
-                <p><strong>Show Date:</strong> {booking.show_date}</p>
-                <p><strong>Time:</strong> {booking.start_time} - {booking.end_time}</p>
+              <div className="space-y-2 text-sm text-gray-700">
+                <div className="flex items-start">
+                  <span className="font-medium min-w-[90px]">Booked by:</span>
+                  <span>{booking.booked_by} ({booking.user_email})</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="font-medium min-w-[90px]">Seat:</span>
+                  <span>#{booking.seat_number} ({booking.seat_category})</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="font-medium min-w-[90px]">Price:</span>
+                  <span>₹{booking.price}</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="font-medium min-w-[90px]">Show Date:</span>
+                  <span>{booking.show_date}</span>
+                </div>
+                <div className="flex items-start">
+                  <span className="font-medium min-w-[90px]">Time:</span>
+                  <span>{booking.start_time} - {booking.end_time}</span>
+                </div>
               </div>
 
               {/* Payment Status */}
-              <div className="mt-4">
+              <div className="mt-4 flex justify-between items-center">
                 <span
-                  className={`px-4 py-1 rounded-full text-xs font-semibold shadow ${
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
                     booking.payment_status === 'completed'
-                      ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'
-                      : 'bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300'
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-yellow-100 text-yellow-800'
                   }`}
                 >
                   {booking.payment_status.toUpperCase()}
                 </span>
-              </div>
-
-              {/* Booking Time */}
-              <div className="text-xs text-gray-400 mt-3">
-                Booked on: {new Date(booking.booking_time).toLocaleString()}
+                <span className="text-xs text-gray-500">
+                  {new Date(booking.booking_time).toLocaleString()}
+                </span>
               </div>
             </motion.div>
           ))}
