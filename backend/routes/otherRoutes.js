@@ -34,7 +34,7 @@ router.post('/unlikeevent' , unlikeEvent);
 
 router.post('/booking/hold', holdSeats);
 router.post('/booking/cancel/hold', cancelSeatHold);
-router.post('/show/booking/confirm' , bookSeats);
+// router.post('/show/booking/confirm' , bookSeats);
 
 
 router.post('/booking/create-payment', createBooking);

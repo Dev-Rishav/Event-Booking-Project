@@ -28,28 +28,38 @@ import path from 'path';
 // };
 
 export const cancelSeatHold = async (req, res) => {
-  const { showId, seatNumber, userId } = req.body;
+  const { show_id, seats, userId } = req.body;
 
-  if (!showId || !seatNumber || !userId) {
-    return res.status(400).json({ message: "showId, seatNumber, and userId are required." });
+  if (!show_id || !seats || !userId || !Array.isArray(seats)) {
+    return res.status(400).json({ message: "show_id, seats array, and userId are required." });
   }
-
-  const key = `hold:${showId}:${seatNumber}:${userId}`;
 
   try {
-    const isHeld = await redisClient.exists(key);
+    let notFoundSeats = [];
 
-    if (!isHeld) {
-      return res.status(404).json({ message: "Seat hold not found or already expired." });
+    for (const seat of seats) {
+      const key = `hold:${show_id}:${seat}`;
+      const isHeld = await redisClient.exists(key);
+
+      if (isHeld) {
+        await redisClient.del(key);
+      } else {
+        notFoundSeats.push(seat.seat_number);
+      }
     }
 
-    await redisClient.del(key);
-    res.status(200).json({ message: "Seat hold cancelled successfully." });
+    if (notFoundSeats.length === seats.length) {
+      return res.status(200).json({ message: "No active seat holds found." });
+    }
+    
+
+    return res.status(200).json({ message: "Seat hold(s) cancelled successfully.", notFoundSeats });
   } catch (error) {
     console.error("Error cancelling seat hold:", error);
-    res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: "Internal server error." });
   }
 };
+
 
 export const bookSeats = async(req,res) => {
   const { show_id, seats, userId } = req.body;

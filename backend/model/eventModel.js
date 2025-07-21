@@ -235,50 +235,51 @@ const Event = {
 
 
     getAllBookingsOfAUser: async (user_id) => {
-        const query = `
-            SELECT 
-                b.booking_id,
-                b.user_id,
-                b.payment_status,
-                b.created_at AS booking_time,
-                
-                e.event_id,
-                e.title AS event_title,
-                e.category,
-                e.start_date,
-                e.end_date,
-                
-                s.show_id,
-                s.show_date,
-                s.start_time,
-                s.end_time,
-                
-                se.seat_id,
-                se.seat_number,
-                se.seat_category,
-                se.price,
-            
-                v.name AS venue_name,
-                v.city,
-                v.address,
-            
-                p.transaction_id,
-                p.amount,
-                p.status AS payment_status,
-                p.created_at AS payment_time
-            
-            FROM bookings b
-            JOIN shows s ON b.show_id = s.show_id
-            JOIN events e ON s.event_id = e.event_id
-            JOIN seats se ON b.seat_id = se.seat_id
-            JOIN venues v ON s.venue_id = v.venue_id
-            LEFT JOIN payment p ON b.transaction_id = p.transaction_id
-            WHERE b.user_id = $1
-            ORDER BY b.created_at DESC;
-        `;
-        const result = await pool.query(query, [user_id]);
-        return result.rows;
+      const query = `
+        SELECT 
+          b.booking_id,
+          b.user_id,
+          b.payment_status,
+          b.created_at AS booking_time,
+          
+          e.event_id,
+          e.title AS event_title,
+          e.category,
+          e.start_date,
+          e.end_date,
+          
+          s.show_id,
+          s.show_date,
+          s.start_time,
+          s.end_time,
+          s.venue_name,
+          
+          v.city,
+          v.address,
+    
+          se.seat_id,
+          se.seat_number,
+          se.seat_category,
+          se.price,
+    
+          p.transaction_id,
+          p.amount,
+          p.status AS payment_status,
+          p.created_at AS payment_time
+    
+        FROM bookings b
+        JOIN shows s ON b.show_id = s.show_id
+        JOIN events e ON s.event_id = e.event_id
+        JOIN seats se ON b.seat_id = se.seat_id
+        JOIN venues v ON s.venue_name = v.city
+        LEFT JOIN payment p ON b.transaction_id = p.transaction_id
+        WHERE b.user_id = $1
+        ORDER BY b.created_at DESC;
+      `;
+      const result = await pool.query(query, [user_id]);
+      return result.rows;
     },
+    
 
     getEventsByCityAndInterest: async (user_id, city) => {
       const query = `

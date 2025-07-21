@@ -107,7 +107,7 @@ const TicketBookingPage = () => {
         userId,
       });
       setHoldTimer(null);
-      setTimeLeft(300);
+      setTimeLeft(0);
     } catch (err) {
       console.error(err);
     }
