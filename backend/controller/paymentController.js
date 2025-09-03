@@ -18,7 +18,7 @@ export const holdSeats = async (req, res) => {
         return res.status(409).json({ message: `Seat ${seat} is already held.` });
       }
 
-      await redisClient.setEx(redisKey, 300, userId);
+      await redisClient.setEx(redisKey, parseInt(process.env.SEAT_HOLD_TIMEOUT) || 300, userId);
     }
 
     res.status(200).json({ message: "Seats held successfully for 5 minutes." });
@@ -73,8 +73,8 @@ export const createBooking = async (req, res) => {
       intent: "sale",
       payer: { payment_method: "paypal" },
       redirect_urls: {
-        return_url: "http://localhost:5173/user/paypal-return",
-        cancel_url: "http://localhost:5173/user/paypal-cancel",
+        return_url: `${process.env.FRONTEND_URL}/user/paypal-return`,
+        cancel_url: `${process.env.FRONTEND_URL}/user/paypal-cancel`,
       },
       transactions: [
         {
@@ -260,11 +260,12 @@ cron.schedule("*/5 * * * *", async () => {
   console.log("Running cleanup job for stale pending payments...");
 
   try {
+    const cleanupInterval = process.env.PAYMENT_CLEANUP_INTERVAL_MINUTES || 10;
     const result = await pool.query(
       `SELECT transaction_id, user_id, created_at
        FROM payment
        WHERE status = 'pending'
-       AND created_at < NOW() - INTERVAL '10 minutes'`
+       AND created_at < NOW() - INTERVAL '${cleanupInterval} minutes'`
     );
 
     for (const payment of result.rows) {

@@ -41,8 +41,8 @@ export const createOrganizerSubscription = async (req, res) => {
       intent: "sale",
       payer: { payment_method: "paypal" },
       redirect_urls: {
-        return_url: "http://localhost:5173/organizer/paypal-subscription-return",
-        cancel_url: "http://localhost:5173/organizer/paypal-subscription-cancel",
+        return_url: `${process.env.FRONTEND_URL}/organizer/paypal-subscription-return`,
+        cancel_url: `${process.env.FRONTEND_URL}/organizer/paypal-subscription-cancel`,
       },
       transactions: [
         {

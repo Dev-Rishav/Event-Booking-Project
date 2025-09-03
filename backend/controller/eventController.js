@@ -407,7 +407,7 @@ export const getOngoingEventsByCity = async (req, res) => {
         }
 
         const result = await Event.getOngoingEventsByCity(city);
-        await redisClient.setEx(redisKey, 3600, JSON.stringify(result));
+        await redisClient.setEx(redisKey, parseInt(process.env.CACHE_TIMEOUT) || 3600, JSON.stringify(result));
 
         res.status(200).json({ result });
     } catch (err) {

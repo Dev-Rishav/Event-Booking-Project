@@ -11,21 +11,22 @@ import "../backend/controller/eventController.js";
 dotenv.config({});
 const app = express();
 
-const PORT = 8001;
+const PORT = process.env.PORT || 8001;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 
 // default middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: FRONTEND_URL,
     credentials: true
 }));
 
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173",
+        origin: FRONTEND_URL,
         methods: ["GET", "POST"]
     }
 });
