@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaLock, FaTicketAlt, FaPhone } from "react-icons/fa";
+import { API_ENDPOINTS } from "../config/api.js";
 
 const Signup = () => {
   const navigation = useNavigate();
@@ -43,7 +44,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8001/user/register", formData);
+      await axios.post(API_ENDPOINTS.AUTH.REGISTER, formData);
       navigation("/login");
     } catch (error) {
       setError(error.response?.data?.error || "Failed to sign up");

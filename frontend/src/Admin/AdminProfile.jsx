@@ -11,6 +11,7 @@ import {
   FaTimes
 } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api.js';
 
 const AdminProfile = () => {
   const [user, setUser] = useState({});
@@ -22,7 +23,7 @@ const AdminProfile = () => {
     const fetchProfile = async () => {
       try {
         const token = Cookies.get('token');
-        const response = await axios.get('http://localhost:8001/user/profile', {
+        const response = await axios.get(API_ENDPOINTS.AUTH.PROFILE, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -43,7 +44,7 @@ const AdminProfile = () => {
     try {
       const token = Cookies.get('token');
       await axios.put(
-        'http://localhost:8001/user/profile',
+        API_ENDPOINTS.AUTH.PROFILE,
         { phone: newPhone },
         { headers: { Authorization: `Bearer ${token}` } }
       );

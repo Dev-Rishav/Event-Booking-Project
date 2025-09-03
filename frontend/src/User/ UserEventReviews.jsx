@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api.js';
 
 const UserEventReviews = () => {
   const { event_id } = useParams();
@@ -13,7 +14,7 @@ const UserEventReviews = () => {
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:8001/api/reviews/${event_id}`);
+      const response = await axios.get(API_ENDPOINTS.REVIEWS.GET(event_id));
       setReviews(response.data.reviews || []);
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -26,7 +27,7 @@ const UserEventReviews = () => {
     if (!reviewText.trim()) return;
     try {
       const userEmail = Cookies.get("id");
-      await axios.post(`http://localhost:8001/api/reviews`, {
+      await axios.post(API_ENDPOINTS.REVIEWS.CREATE, {
         user_id: userEmail,
         event_id,
         review_text: reviewText,

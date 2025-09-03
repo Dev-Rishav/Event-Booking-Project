@@ -1,5 +1,6 @@
 import react , { useContext , createContext , useEffect , useState } from "react";
 import axios from 'axios';
+import { API_ENDPOINTS } from "../../config/api.js";
 
 
 const EventContext = createContext();
@@ -22,12 +23,10 @@ const EventProvider = ({children}) => {
     };
     
 
-    const URL = "http://localhost:8001/api/event";
-
     const fetchEvents = async (id) => {
         setLoading(true);
         try {
-            const response = await axios.get(`${URL}/${id}`);
+            const response = await axios.get(API_ENDPOINTS.EVENTS.BY_ORGANIZER(id));
             // console.log(response.data.result);
             setEvents(response.data.result);
             setError(null);
@@ -111,7 +110,7 @@ const EventProvider = ({children}) => {
 
     const getAllBookingOfOrganizer = async(organizer_id) => {
         try {
-            const response = await axios.get(`http://localhost:8001/api/organizerbookings/${organizer_id}`);
+            const response = await axios.get(API_ENDPOINTS.BOOKING.ORGANIZER_BOOKINGS(organizer_id));
             SetBookings(response.data.result);
             return response;
         } catch (error) {

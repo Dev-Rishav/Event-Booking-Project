@@ -4,6 +4,7 @@ import { useUser } from "../User/UserContext/UserContext";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { API_ENDPOINTS } from "../config/api.js";
 
 const TicketBookingPage = () => {
   const userId = Cookies.get("id");
@@ -85,7 +86,7 @@ const TicketBookingPage = () => {
     if (!selectedSeats.length) return alert("Please select at least one seat.");
     try {
       setIsHolding(true);
-      await axios.post("http://localhost:8001/api/booking/hold", {
+      await axios.post(API_ENDPOINTS.BOOKING.HOLD, {
         show_id,
         seats: selectedSeats,
         userId,
@@ -101,7 +102,7 @@ const TicketBookingPage = () => {
 
   const clearHold = async () => {
     try {
-      await axios.post("http://localhost:8001/api/booking/cancel/hold", {
+      await axios.post(API_ENDPOINTS.BOOKING.CANCEL_HOLD, {
         show_id,
         seats: selectedSeats,
         userId,

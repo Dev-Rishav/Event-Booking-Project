@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { API_ENDPOINTS } from "../../config/api.js";
 
 const Revenue = () => {
   const id = Cookies.get("id");
@@ -10,7 +11,7 @@ const Revenue = () => {
     const fetchEarnings = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8001/api/eventwiseearning/${id}`
+          API_ENDPOINTS.BOOKING.EVENTWISE_EARNING(id)
         );
         setEarnings(response.data.result);
       } catch (error) {

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { FaTicketAlt, FaEnvelope, FaLock } from "react-icons/fa";
+import { API_ENDPOINTS } from "../config/api.js";
 
 const Login = () => {
   const navigation = useNavigate();
@@ -19,7 +20,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8001/user/login", formData);
+      const response = await axios.post(API_ENDPOINTS.AUTH.LOGIN, formData);
       const { token, role, userId } = response.data;
 
       Cookies.set("token", token, { expires: 1 });

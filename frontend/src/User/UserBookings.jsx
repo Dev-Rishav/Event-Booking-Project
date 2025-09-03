@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { FaTicketAlt , FaDownload } from 'react-icons/fa';
+import { API_ENDPOINTS } from '../config/api.js';
 
 const UserBookings = () => {
   const id = Cookies.get("id");
@@ -11,7 +12,7 @@ const UserBookings = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await axios.get(`http://localhost:8001/api/userbookings/${id}`);
+        const res = await axios.get(API_ENDPOINTS.BOOKING.USER_BOOKINGS(id));
         setBookings(res.data.result);
       } catch (err) {
         console.error("Error fetching user bookings", err);
@@ -26,7 +27,7 @@ const UserBookings = () => {
 
   const downloadTicket = async (bookingData) => {
     try {
-      const response = await fetch('http://localhost:8001/api/generate-pdf', {
+      const response = await fetch(API_ENDPOINTS.PDF.GENERATE, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

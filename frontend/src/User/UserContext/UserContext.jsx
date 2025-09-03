@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { v4 as uuidv4 } from "uuid";
 import { io } from "socket.io-client";
+import { API_ENDPOINTS, SOCKET_CONFIG } from "../../config/api.js";
 
 
 const UserContext = createContext();
@@ -11,7 +12,7 @@ export const useUser = () => {
     return useContext(UserContext);
 }
 
-const socket = io("http://localhost:8001");
+const socket = io(SOCKET_CONFIG.URL);
 
 
 
@@ -93,10 +94,6 @@ const UserProvider = ({ children }) => {
 
 
 
-    const URL = "http://localhost:8001/api/event";
-
-
-
     const fetchEvents = async (city) => {
         try {
             const response = await axios.get(`${URL}/all/events?city=${city}`);
@@ -111,7 +108,7 @@ const UserProvider = ({ children }) => {
 
     const fetchLikedEvents = async (userId) => {
         try {
-            const response = await axios.get(`http://localhost:8001/api/likedevents/${userId}`);
+            const response = await axios.get(API_ENDPOINTS.LIKES.GET_LIKED(userId));
             // console.log(response.data.result);
             setUserEvents(response.data.result);
             setError(null);
@@ -153,7 +150,7 @@ const UserProvider = ({ children }) => {
 
     const fetchRecommendedEvents = async (city) => {
         try {
-            const response = await axios.get(`http://localhost:8001/api/userinterestevents/${userId}?city=${city}`);
+            const response = await axios.get(API_ENDPOINTS.EVENTS.USER_INTEREST(userId) + `?city=${city}`);
             setRecommenededEvents(response.data.result);
             console.log("Recommended Events:", response.data.result);
             setError(null);
@@ -166,7 +163,7 @@ const UserProvider = ({ children }) => {
 
     const fetchOngoingEvents = async (city) => {
         try {
-            const response = await axios.get(`http://localhost:8001/api/ongoingevents?city=${city}`);
+            const response = await axios.get(API_ENDPOINTS.EVENTS.ONGOING + `?city=${city}`);
             setOngoingEvents(response.data.result);
             setError(null);
         } catch (error) {
@@ -178,7 +175,7 @@ const UserProvider = ({ children }) => {
 
     const fetchUpcomingEvents = async (city) => {
         try {
-            const response = await axios.get(`http://localhost:8001/api/upcomingevents?city=${city}`);
+            const response = await axios.get(API_ENDPOINTS.EVENTS.UPCOMING + `?city=${city}`);
             setUpcomingEvents(response.data.result);
             setError(null);
         } catch (error) {
@@ -218,7 +215,7 @@ const UserProvider = ({ children }) => {
 
     const fetchSeats = async (show_id) => {
         try {
-            const res = await axios.get(`http://localhost:8001/api/show/seats/${show_id}`);
+            const res = await axios.get(API_ENDPOINTS.SEATS.FETCH(show_id));
             setSeats(res.data.result);
         } catch (err) {
             console.error("Error fetching seats", err);
@@ -228,7 +225,7 @@ const UserProvider = ({ children }) => {
 
     const createBookingAndRedirect = async ({ userId, showId, selectedSeats, totalAmount }) => {
         try {
-            const response = await axios.post('http://localhost:8001/api/booking/create-payment', {
+            const response = await axios.post(API_ENDPOINTS.BOOKING.CREATE_PAYMENT, {
                 userId,
                 showId,
                 selectedSeats,
@@ -249,7 +246,7 @@ const UserProvider = ({ children }) => {
     const fetchShowsofAnEventByCity = async (event_id, venue_name) => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:8001/api/shows/city/${event_id}/${venue_name}`);
+            const response = await axios.get(API_ENDPOINTS.SHOWS.BY_CITY(event_id, venue_name));
             setUserShows(response.data.result);
             setError(null);
         } catch (error) {   
@@ -263,7 +260,7 @@ const UserProvider = ({ children }) => {
     const downloadTicket = async (bookingDetails) => {
         try {
             const response = await axios.post(
-                'http://localhost:8001/api/generate-ticket',
+                API_ENDPOINTS.PDF.GENERATE_TICKET,
                 { bookingDetails },
                 { responseType: 'blob' } // important for downloading files
             );

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { FaTicketAlt, FaUser } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api.js';
 
 const AdminOrganizersDetails = () => {
   const { email } = useParams();
@@ -14,7 +15,7 @@ const AdminOrganizersDetails = () => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:8001/api/user/${email}`);
+        const res = await axios.get(API_ENDPOINTS.ADMIN.GET_USER(email));
         setOrganizer(res.data.result);
       } catch (err) {
         console.error("Error fetching user details", err);

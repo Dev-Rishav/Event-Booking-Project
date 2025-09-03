@@ -5,6 +5,8 @@ import { useUser  } from '../User/UserContext/UserContext';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+import { API_ENDPOINTS } from "../config/api.js";
+
 const PaypalReturn = () => {
   const id = Cookies.get("id");
   const { selectedSeats  } = useUser();
@@ -22,7 +24,7 @@ const PaypalReturn = () => {
 
     const capturePayment = async () => {
       try {
-        const res = await axios.post('http://localhost:8001/api/booking/capture-payment', {
+        const res = await axios.post(API_ENDPOINTS.BOOKING.CAPTURE_PAYMENT, {
           paymentId,
           PayerID,
           selectedSeats,

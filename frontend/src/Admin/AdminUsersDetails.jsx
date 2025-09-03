@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { FaTicketAlt, FaUser } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api.js';
 
 const AdminUsersDetails = () => {
   const { email } = useParams();
@@ -13,7 +14,7 @@ const AdminUsersDetails = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await axios.get(`http://localhost:8001/api/userbookings/${email}`);
+        const res = await axios.get(API_ENDPOINTS.BOOKING.USER_BOOKINGS(email));
         setBookings(res.data.result);
       } catch (err) {
         console.error("Error fetching user bookings", err);
@@ -24,7 +25,7 @@ const AdminUsersDetails = () => {
 
     const fetchUserDetails = async () => {
       try {
-        const res = await axios.get(`http://localhost:8001/api/user/${email}`);
+        const res = await axios.get(API_ENDPOINTS.ADMIN.GET_USER(email));
         setUser(res.data.result);
       } catch (err) {
         console.error("Error fetching user details", err);

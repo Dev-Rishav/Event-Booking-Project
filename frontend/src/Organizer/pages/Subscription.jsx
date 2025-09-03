@@ -4,6 +4,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { FaCrown, FaCheck, FaArrowRight, FaFire, FaStar } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../../config/api.js';
 
 const Subscription = () => {
   const organizer_id = Cookies.get("id");
@@ -19,11 +20,11 @@ const Subscription = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const profile = await axios.get('http://localhost:8001/user/profile', {
+        const profile = await axios.get(API_ENDPOINTS.AUTH.PROFILE, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const plansRes = await axios.get('http://localhost:8001/api/admin/get-plans');
-        const currentPlanRes = await axios.get(`http://localhost:8001/api/admin/organizer/current-plan/${organizer_id}`);
+        const plansRes = await axios.get(API_ENDPOINTS.ADMIN.PLANS.GET_ALL);
+        const currentPlanRes = await axios.get(API_ENDPOINTS.ADMIN.SUBSCRIPTION.CURRENT_PLAN(organizer_id));
 
         setSubscriptionStatus(profile.data.result);
         setPlans(plansRes.data.result);

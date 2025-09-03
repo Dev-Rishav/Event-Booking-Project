@@ -1,13 +1,12 @@
 // src/redux/adminActions.js or same file
 import { setLoading, setUsers, setOrganizers, setError, setApprovalUrl, setSuccess , setPlan , setPlans } from './adminSlice';
 import axios from 'axios';
-
-const BASE_URL = 'http://localhost:8001/api/admin';
+import { API_ENDPOINTS } from '../../../config/api.js';
 
 export const fetchAllUsers = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const res = await axios.get(`${BASE_URL}/users`);
+    const res = await axios.get(API_ENDPOINTS.ADMIN.USERS);
     dispatch(setUsers(res.data.result));
     dispatch(setError(null));
   } catch (err) {
@@ -19,7 +18,7 @@ export const fetchAllUsers = () => async (dispatch) => {
 export const fetchAllOrganizers = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const res = await axios.get(`${BASE_URL}/organizers`);
+    const res = await axios.get(API_ENDPOINTS.ADMIN.ORGANIZERS);
     dispatch(setOrganizers(res.data.result));
     dispatch(setError(null));
   } catch (err) {
@@ -32,7 +31,7 @@ export const fetchAllOrganizers = () => async (dispatch) => {
 export const createOrganizerSubscription = (email, price, plan_id, start_date, end_date) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await axios.post(`${BASE_URL}/organizer/create-subscription`, {
+    const response = await axios.post(API_ENDPOINTS.ADMIN.SUBSCRIPTION.CREATE, {
       email, price, plan_id, start_date, end_date
     });
     dispatch(setApprovalUrl(response.data.approvalUrl));
@@ -56,7 +55,7 @@ export const createOrganizerSubscription = (email, price, plan_id, start_date, e
 export const captureOrganizerSubscription = (paymentId, PayerID, email) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await axios.post(`${BASE_URL}/organizer/capture-subscription`, {
+    const response = await axios.post(API_ENDPOINTS.ADMIN.SUBSCRIPTION.CAPTURE, {
       paymentId,
       PayerID,
       email,
@@ -74,7 +73,7 @@ export const captureOrganizerSubscription = (paymentId, PayerID, email) => async
 export const fetchSubscriptionPlan = (plan_id) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const res = await axios.get(`${BASE_URL}/get-plan/${plan_id}`);
+    const res = await axios.get(API_ENDPOINTS.ADMIN.PLANS.GET_BY_ID(plan_id));
     localStorage.setItem('plan', JSON.stringify(res.data.result));
     dispatch(setPlan(res.data.result));
     dispatch(setLoading(false));
@@ -87,7 +86,7 @@ export const fetchSubscriptionPlan = (plan_id) => async (dispatch) => {
 export const fetchAllSubscriptionPlans = () => async (dispatch) => {
   dispatch(setLoading(true));
   try {
-    const res = await axios.get(`${BASE_URL}/get-plans`);
+    const res = await axios.get(API_ENDPOINTS.ADMIN.PLANS.GET_ALL);
     localStorage.setItem('Allplans', JSON.stringify(res.data.result));
     // console.log(res.data.result);
     dispatch(setPlans(res.data.result));
@@ -102,8 +101,8 @@ export const fetchAllSubscriptionPlans = () => async (dispatch) => {
 export const createSubscriptionPlan = (formData) => async(dispatch) => {
   dispatch(setLoading(true));
   try {
-    const response = await axios.post(`${BASE_URL}/plan` , formData );
+    const response = await axios.post(API_ENDPOINTS.ADMIN.PLANS.CREATE, formData);
   } catch (error) {
-    dispatch(setError(err.response?.data?.error || 'Failed to create plan'));
+    dispatch(setError(error.response?.data?.error || 'Failed to create plan'));
   }
 }

@@ -6,6 +6,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { fetchAllSubscriptionPlans } from '../redux/slices/adminslice/adminActions';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api.js';
 
 const AdminSubscriptionPlans = () => {
   const navigate = useNavigate();
@@ -32,9 +33,9 @@ const AdminSubscriptionPlans = () => {
     const planId = plan.plan_id;
     try {
       if (plan.is_active) {
-        await axios.patch(`http://localhost:8001/api/admin/inactiveplan/${planId}`);
+        await axios.patch(API_ENDPOINTS.ADMIN.PLANS.SET_INACTIVE(planId));
       } else {
-        await axios.patch(`http://localhost:8001/api/admin/activeplan/${planId}`);
+        await axios.patch(API_ENDPOINTS.ADMIN.PLANS.SET_ACTIVE(planId));
       }
       fetchPlans();
     } catch (error) {

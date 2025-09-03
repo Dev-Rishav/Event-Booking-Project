@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { FaUserCircle, FaPhoneAlt, FaEnvelope, FaUserTag, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { API_ENDPOINTS } from '../config/api.js';
 
 const UserProfile = () => {
   const [user, setUser] = useState({});
@@ -14,7 +15,7 @@ const UserProfile = () => {
     const fetchProfile = async () => {
       try {
         const token = Cookies.get('token');
-        const response = await axios.get('http://localhost:8001/user/profile', {
+        const response = await axios.get(API_ENDPOINTS.AUTH.PROFILE, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -34,7 +35,7 @@ const UserProfile = () => {
   const handleSave = async () => {
     try {
       const token = Cookies.get('token');
-      await axios.put('http://localhost:8001/user/profile', {
+      await axios.put(API_ENDPOINTS.AUTH.PROFILE, {
         phone: newPhone
       }, {
         headers: {

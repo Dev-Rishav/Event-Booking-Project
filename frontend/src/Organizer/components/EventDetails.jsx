@@ -3,6 +3,7 @@ import { useEvent } from "../EventContext/EventContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_ENDPOINTS } from "../../config/api.js";
 
 const EventDetails = () => {
   const { selectedEvent, setSelectedEvent, shows, fetchShows } = useEvent();
@@ -14,7 +15,7 @@ const EventDetails = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:8001/api/reviews/${selectedEvent.event_id}`
+        API_ENDPOINTS.REVIEWS.GET(selectedEvent.event_id)
       );
       setReviews(response.data.reviews || []);
     } catch (error) {

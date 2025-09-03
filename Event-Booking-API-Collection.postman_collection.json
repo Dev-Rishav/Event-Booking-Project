@@ -1,0 +1,1072 @@
+{
+	"info": {
+		"_postman_id": "event-booking-api-collection",
+		"name": "Event Booking API",
+		"description": "Complete API collection for Event Booking Application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8001",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"name\": \"John Doe\",\n  \"phone\": \"+1234567890\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/user/register",
+							"host": ["{{base_url}}"],
+							"path": ["user", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/user/login",
+							"host": ["{{base_url}}"],
+							"path": ["user", "login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "User Profile",
+			"item": [
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/user/profile",
+							"host": ["{{base_url}}"],
+							"path": ["user", "profile"]
+						}
+					}
+				},
+				{
+					"name": "Update User Phone",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phone\": \"+1987654321\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/user/profile",
+							"host": ["{{base_url}}"],
+							"path": ["user", "profile"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Events Management",
+			"item": [
+				{
+					"name": "Create Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Sample Event",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "This is a sample event description",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Music",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/event",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event"]
+						}
+					}
+				},
+				{
+					"name": "Get Events by Organizer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "organizer_email@example.com"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Events by Category and Organizer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/category/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "category", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "organizer_email@example.com"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Events by City and Organizer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/city/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "city", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "organizer_email@example.com"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Events by City",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/all/events?city=New York",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "all", "events"],
+							"query": [
+								{
+									"key": "city",
+									"value": "New York"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Events by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/all/category?category=Music",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "all", "category"],
+							"query": [
+								{
+									"key": "category",
+									"value": "Music"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Events by Date and City",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/by-date/all?date=2025-09-05&city=New York",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "by-date", "all"],
+							"query": [
+								{
+									"key": "date",
+									"value": "2025-09-05"
+								},
+								{
+									"key": "city",
+									"value": "New York"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Top Events by Likes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/top",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "top"]
+						}
+					}
+				},
+				{
+					"name": "Get Ongoing Events by City",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/ongoingevents?city=New York",
+							"host": ["{{base_url}}"],
+							"path": ["api", "ongoingevents"],
+							"query": [
+								{
+									"key": "city",
+									"value": "New York"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Upcoming Events by City",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/upcomingevents?city=New York",
+							"host": ["{{base_url}}"],
+							"path": ["api", "upcomingevents"],
+							"query": [
+								{
+									"key": "city",
+									"value": "New York"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Events by City and Interest",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/userinterestevents/:id?city=New York",
+							"host": ["{{base_url}}"],
+							"path": ["api", "userinterestevents", ":id"],
+							"query": [
+								{
+									"key": "city",
+									"value": "New York"
+								}
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_email@example.com"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Shows Management",
+			"item": [
+				{
+					"name": "Create Show",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"show_date\": \"2025-09-15\",\n  \"show_time\": \"19:00:00\",\n  \"venue_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/event/show/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "show", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "event_id"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Shows of an Event",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/show/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "show", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "event_id"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Shows by City",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/shows/city/:event_id/:venue_name",
+							"host": ["{{base_url}}"],
+							"path": ["api", "shows", "city", ":event_id", ":venue_name"],
+							"variable": [
+								{
+									"key": "event_id",
+									"value": "1"
+								},
+								{
+									"key": "venue_name",
+									"value": "venue_name"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Seat Management",
+			"item": [
+				{
+					"name": "Fetch Seats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/show/seats/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "show", "seats", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "show_id"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Hold Seats",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"show_id\": 1,\n  \"seats\": [\"A1\", \"A2\"],\n  \"user_id\": \"user@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/booking/hold",
+							"host": ["{{base_url}}"],
+							"path": ["api", "booking", "hold"]
+						}
+					}
+				},
+				{
+					"name": "Cancel Seat Hold",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"show_id\": 1,\n  \"seats\": [\"A1\", \"A2\"],\n  \"user_id\": \"user@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/booking/cancel/hold",
+							"host": ["{{base_url}}"],
+							"path": ["api", "booking", "cancel", "hold"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Payment & Booking",
+			"item": [
+				{
+					"name": "Create Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"showId\": 1,\n  \"seatNumbers\": [\"A1\", \"A2\"],\n  \"userId\": \"user@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/booking/create-payment",
+							"host": ["{{base_url}}"],
+							"path": ["api", "booking", "create-payment"]
+						}
+					}
+				},
+				{
+					"name": "Capture Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentId\": \"payment_id_from_paypal\",\n  \"payerId\": \"payer_id_from_paypal\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/booking/capture-payment",
+							"host": ["{{base_url}}"],
+							"path": ["api", "booking", "capture-payment"]
+						}
+					}
+				},
+				{
+					"name": "Generate PDF Ticket",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transactionId\": \"transaction_id\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/generate-pdf",
+							"host": ["{{base_url}}"],
+							"path": ["api", "generate-pdf"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Bookings",
+			"item": [
+				{
+					"name": "Get Organizer Bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/organizerbookings/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "organizerbookings", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "organizer_email@example.com"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User Bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/userbookings/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "userbookings", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_email@example.com"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Event-wise Earning",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/eventwiseearning/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "eventwiseearning", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "organizer_email@example.com"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Liked Events",
+			"item": [
+				{
+					"name": "Get Liked Events by User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/likedevents/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "likedevents", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user_email@example.com"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Like Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"user@example.com\",\n  \"event_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/likeevent",
+							"host": ["{{base_url}}"],
+							"path": ["api", "likeevent"]
+						}
+					}
+				},
+				{
+					"name": "Unlike Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"user@example.com\",\n  \"event_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/unlikeevent",
+							"host": ["{{base_url}}"],
+							"path": ["api", "unlikeevent"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reviews",
+			"item": [
+				{
+					"name": "Create Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"event_id\": 1,\n  \"user_id\": \"user@example.com\",\n  \"rating\": 5,\n  \"comment\": \"Great event!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/reviews",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reviews"]
+						}
+					}
+				},
+				{
+					"name": "Get Event Reviews",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/reviews/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reviews", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "event_id"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Venue",
+			"item": [
+				{
+					"name": "Get Venue by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/event/venue/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "event", "venue", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "venue_id"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Users & Organizers",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/users",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "users"]
+						}
+					}
+				},
+				{
+					"name": "Get All Organizers",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/organizers",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "organizers"]
+						}
+					}
+				},
+				{
+					"name": "Get User by Email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/user/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "user", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "user@example.com"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Subscription Management",
+			"item": [
+				{
+					"name": "Create Organizer Subscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"organizer_id\": \"organizer@example.com\",\n  \"plan_id\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/organizer/create-subscription",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "organizer", "create-subscription"]
+						}
+					}
+				},
+				{
+					"name": "Capture Organizer Subscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentId\": \"payment_id_from_paypal\",\n  \"payerId\": \"payer_id_from_paypal\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/organizer/capture-subscription",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "organizer", "capture-subscription"]
+						}
+					}
+				},
+				{
+					"name": "Get Current Subscription of Organizer",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/organizer/current-plan/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "organizer", "current-plan", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "organizer@example.com"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Subscription Plans",
+			"item": [
+				{
+					"name": "Create Subscription Plan",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"plan_name\": \"Premium Plan\",\n  \"price\": 99.99,\n  \"duration_months\": 12,\n  \"description\": \"Premium subscription plan\",\n  \"features\": [\"Feature 1\", \"Feature 2\"]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/admin/plan",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "plan"]
+						}
+					}
+				},
+				{
+					"name": "Get All Subscription Plans",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/get-plans",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "get-plans"]
+						}
+					}
+				},
+				{
+					"name": "Get Subscription Plan by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/get-plan/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "get-plan", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "plan_id"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Set Plan Status to Inactive",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/inactiveplan/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "inactiveplan", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "plan_id"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Set Plan Status to Active",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/admin/activeplan/:id",
+							"host": ["{{base_url}}"],
+							"path": ["api", "admin", "activeplan", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "plan_id"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Server Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": ["{{base_url}}"],
+							"path": [""]
+						}
+					}
+				}
+			]
+		}
+	]
+}
